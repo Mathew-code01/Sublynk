@@ -30,6 +30,14 @@ const PORT = process.env.PORT || 5000;
 async function start() {
   await connectDB();
 
+  // 🔹 Log environment variables
+  console.log("=== ENV VARIABLES ===");
+  console.log("PORT:", process.env.PORT);
+  console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+  console.log("MONGO_URI:", process.env.MONGO_URI ? "✔︎ Set" : "❌ Missing");
+  console.log("JWT_SECRET:", process.env.JWT_SECRET ? "✔︎ Set" : "❌ Missing");
+  console.log("====================");
+
   const app = express();
   const server = http.createServer(app);
   const io = new Server(server, {
@@ -39,14 +47,13 @@ async function start() {
     },
   });
 
-
   // Global if needed
   global.io = io;
 
   // Middleware
   app.use(cors());
-  app.use(express.json()); // Handles JSON request bodies
-  app.use(express.urlencoded({ extended: true })); // ✅ Handles form-urlencoded bodies
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
   app.use(compression());
   app.use(morgan("dev"));
 
