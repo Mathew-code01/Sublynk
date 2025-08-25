@@ -20,7 +20,8 @@
 //
 
 import { fetchSubtitles as fetchOpenSubtitles } from "./subtitlesAPI";
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "../api/config";
+
 
 /* --------------------------------------------------------------
  * Language Normalization

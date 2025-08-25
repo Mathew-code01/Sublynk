@@ -10,7 +10,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Signup.css";
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "../api/config";
+
 
 function Signup() {
   const navigate = useNavigate();

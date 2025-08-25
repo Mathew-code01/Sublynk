@@ -7,7 +7,8 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "../api/config";
+
 
 const STORAGE_KEY = "sublynk_auth";
 const AuthContext = createContext(null);

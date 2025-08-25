@@ -7,7 +7,8 @@ import "../styles/Forum.css";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { fetchPosts, createPost, deletePost } from "../api/forumAPI";
 import { useAuth } from "../context/AuthContext";
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "../api/config";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);

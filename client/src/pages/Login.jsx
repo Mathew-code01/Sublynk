@@ -8,7 +8,8 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Login.css";
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "../api/config";
+
 
 function Login() {
   const navigate = useNavigate();

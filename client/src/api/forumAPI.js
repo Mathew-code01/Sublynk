@@ -1,6 +1,7 @@
 // client/src/api/forumAPI.js
 import { getAuthToken } from "./authToken";
-import { API_BASE_URL } from "./config"; // <-- central API base URL
+import { API_BASE_URL } from "../api/config";
+
 
 const BASE = `${API_BASE_URL}/api/forum`;
 

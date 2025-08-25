@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Requests.css";
 import DashboardLayout from "../layouts/DashboardLayout";
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "../api/config";
+
 
 
 import { getAuthToken } from "../api/authToken";

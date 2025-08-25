@@ -1,7 +1,8 @@
 // client/src/api/uploadAPI.js
 import { getAuthToken } from "./authToken";
 
-import { API_BASE_URL } from "./config";
+import { API_BASE_URL } from "../api/config";
+
 
 const BASE = `${API_BASE_URL}/api/subtitles`;
 
