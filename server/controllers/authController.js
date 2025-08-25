@@ -10,11 +10,12 @@ const User = require("../models/User");
 // --- utils ---
 const normalizeEmail = (e) => (e || "").trim().toLowerCase();
 const signToken = (userId) => jwt.sign({ id: userId }, jwtSecret, { expiresIn: jwtExpire });
-const buildUserPayload = (u) => ({ id: u._id, name: u.name, email: u.email });
+
 
 // --- controllers ---
 
 /* POST /api/auth/signup */
+// server/controllers/authController.js
 async function signup(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -22,7 +23,7 @@ async function signup(req, res) {
   }
 
   const email = normalizeEmail(req.body.email);
-  const { name, password } = req.body;
+  const { username, password } = req.body;
 
   try {
     const existing = await User.findOne({ email });
@@ -30,11 +31,16 @@ async function signup(req, res) {
       return res.status(409).json({ message: "Email already registered." });
     }
 
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
+      return res.status(409).json({ message: "Username already taken." });
+    }
+
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
     const user = await User.create({
-      name: name?.trim() || email,
+      username: username.trim(),
       email,
       passwordHash,
     });
@@ -46,6 +52,14 @@ async function signup(req, res) {
     return res.status(500).json({ message: "Server error" });
   }
 }
+
+// also update buildUserPayload:
+const buildUserPayload = (u) => ({
+  id: u._id,
+  username: u.username,
+  email: u.email,
+});
+
 
 /* POST /api/auth/login */
 async function login(req, res) {

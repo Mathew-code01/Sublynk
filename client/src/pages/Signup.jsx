@@ -14,7 +14,7 @@ import "../styles/Signup.css";
 function Signup() {
   const navigate = useNavigate();
   const { login } = useAuth(); // auto-login after signup (optional)
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (e) => {
@@ -64,9 +64,9 @@ function Signup() {
           <h2>Create Account</h2>
           <form onSubmit={handleSubmit}>
             <input
-              name="name"
-              placeholder="Full Name"
-              value={formData.name}
+              name="username"
+              placeholder="Username"
+              value={formData.username}
               onChange={handleChange}
               required
             />
