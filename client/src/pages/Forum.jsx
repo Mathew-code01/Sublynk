@@ -24,7 +24,7 @@ const Forum = () => {
 
   const isLoggedIn = Boolean(user);
   const username = user?.username || "Guest";
-  const avatar = user?.avatar || "https://i.pravatar.cc/40?u=default";
+  // const avatar = user?.avatar || "https://i.pravatar.cc/40?u=default";
 
 
   useEffect(() => {
