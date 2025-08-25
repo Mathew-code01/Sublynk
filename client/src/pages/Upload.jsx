@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/Upload.css";
 import DashboardLayout from "../layouts/DashboardLayout";
-import { API_BASE_URL } from "./config";
+
 
 import { fetchRecentUploads, uploadSubtitle } from "../api/uploadAPI";
 
