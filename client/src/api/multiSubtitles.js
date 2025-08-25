@@ -20,6 +20,7 @@
 //
 
 import { fetchSubtitles as fetchOpenSubtitles } from "./subtitlesAPI";
+import { API_BASE_URL } from "./config";
 
 /* --------------------------------------------------------------
  * Language Normalization
@@ -104,11 +105,11 @@ function safeUrl(u) {
  * Download Proxy Builders
  * -------------------------------------------------------------- */
 const buildDownloadProxyForYify = (rawUrl) =>
-  `/api/yify/download?url=${encodeURIComponent(rawUrl)}`;
+  `${API_BASE_URL}/api/yify/download?url=${encodeURIComponent(rawUrl)}`;
 const buildDownloadProxyForPodnapisi = (rawUrl) =>
-  `/api/podnapisi/download?url=${encodeURIComponent(rawUrl)}`;
+  `${API_BASE_URL}/api/podnapisi/download?url=${encodeURIComponent(rawUrl)}`;
 const buildDownloadProxyForAddic7ed = (rawUrl) =>
-  `/api/addic7ed/download?url=${encodeURIComponent(rawUrl)}`;
+  `${API_BASE_URL}/api/addic7ed/download?url=${encodeURIComponent(rawUrl)}`;
 
 /* --------------------------------------------------------------
  * Provider → Unified Object Mappers
@@ -202,7 +203,7 @@ function mapPodnapisi(items = []) {
 async function fetchPodnapisi(query) {
   try {
     const res = await fetch(
-      `/api/podnapisi/search?query=${encodeURIComponent(query)}`
+      `${API_BASE_URL}/api/podnapisi/search?query=${encodeURIComponent(query)}`
     );
     if (!res.ok) throw new Error(`Podnapisi API error: ${res.status}`);
     const data = await res.json();
@@ -244,7 +245,7 @@ async function fetchYifySubtitles(query) {
 
     // Step 1: Search for the movie + direct .zip links
     const searchRes = await fetch(
-      `/api/yify/search?query=${encodeURIComponent(query)}`
+      `${API_BASE_URL}/api/yify/search?query=${encodeURIComponent(query)}`
     );
     const searchText = await searchRes.text();
     console.debug("[fetchYifySubtitles] Raw search response:", searchText);
@@ -295,7 +296,7 @@ async function fetchYifySubtitles(query) {
 async function fetchAddic7ed(query) {
   try {
     const res = await fetch(
-      `/api/addic7ed/search?query=${encodeURIComponent(query)}`
+      `${API_BASE_URL}/api/addic7ed/search?query=${encodeURIComponent(query)}`
     );
     if (!res.ok) throw new Error(`Addic7ed API error: ${res.status}`);
     const data = await res.json();
@@ -309,7 +310,7 @@ async function fetchAddic7ed(query) {
 async function fetchTVSubtitles(query) {
   try {
     const res = await fetch(
-      `/api/tvsubtitles/search?query=${encodeURIComponent(
+      `${API_BASE_URL}/api/tvsubtitles/search?query=${encodeURIComponent(
         query
       )}&_=${Date.now()}`
     );
@@ -607,7 +608,7 @@ export async function fetchCombinedSubtitles(
 
 export async function fetchLatestTVSubtitles() {
   try {
-    const res = await fetch("/api/tvsubtitles/latest");
+    const res = await fetch(`${API_BASE_URL}/api/tvsubtitles/latest`);
     if (!res.ok) {
       console.error("❌ Failed to fetch latest subtitles:", res.statusText);
       return [];
@@ -625,7 +626,7 @@ export async function fetchLatestTVSubtitles() {
 
 export async function fetchMostDownloadedTVSubtitles() {
   try {
-    const res = await fetch("/api/tvsubtitles/most-downloaded");
+    const res = await fetch(`${API_BASE_URL}/api/tvsubtitles/most-downloaded`);
     if (!res.ok) {
       console.error(
         "❌ Failed to fetch most-downloaded subtitles:",

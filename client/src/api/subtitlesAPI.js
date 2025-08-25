@@ -8,8 +8,11 @@
 // -----------------------------------------------------------------------------
 
 import { getAuthToken } from "./authToken";
+import { API_BASE_URL } from "./config";
 
-const BASE = "/api/subtitles";
+const BASE = `${API_BASE_URL}/api/subtitles`;
+
+
 const OPEN_SUBS_WEB_BASE = "https://www.opensubtitles.com/en/subtitles";
 
 // ------------------------------------------------------------------

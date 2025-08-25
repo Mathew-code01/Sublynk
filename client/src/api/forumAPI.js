@@ -1,6 +1,8 @@
+// client/src/api/forumAPI.js
 import { getAuthToken } from "./authToken";
+import { API_BASE_URL } from "./config"; // <-- central API base URL
 
-const BASE = "/api/forum";
+const BASE = `${API_BASE_URL}/api/forum`;
 
 /**
  * Fetch all forum posts
@@ -8,7 +10,11 @@ const BASE = "/api/forum";
  */
 export async function fetchPosts() {
   try {
-    const res = await fetch(BASE);
+    const res = await fetch(BASE, {
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
     const data = await res.json();
     return Array.isArray(data) ? data : [];
   } catch (err) {
@@ -17,14 +23,16 @@ export async function fetchPosts() {
   }
 }
 
-
 /**
  * Create a new forum post
  * @param {string} content - The post content
+ * @param {string} username - Author username
+ * @param {string} avatar - Author avatar URL
  * @returns {Promise<object|null>} - Created post data or null if failed
  */
 export async function createPost(content, username, avatar) {
   if (!content.trim()) return null;
+
   try {
     const res = await fetch(BASE, {
       method: "POST",
@@ -41,8 +49,6 @@ export async function createPost(content, username, avatar) {
     return null;
   }
 }
-
-
 
 /**
  * Delete a forum post by ID

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Requests.css";
 import DashboardLayout from "../layouts/DashboardLayout";
+import { API_BASE_URL } from "./config";
 
 
 import { getAuthToken } from "../api/authToken";
@@ -18,7 +19,7 @@ const Requests = () => {
 
   const fetchRequests = async () => {
     try {
-      const res = await fetch("/api/requests");
+      const res = await fetch(`${API_BASE_URL}/api/requests`);
       const data = await res.json();
       if (data.success) setRequests(data.data);
     } catch (err) {
@@ -31,7 +32,7 @@ const Requests = () => {
     if (!newRequest.trim()) return;
 
     try {
-      const res = await fetch("/api/requests", {
+      const res = await fetch(`${API_BASE_URL}/api/requests`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

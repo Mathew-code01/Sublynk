@@ -10,6 +10,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuth } from "../context/AuthContext";
 import "../styles/Signup.css";
+import { API_BASE_URL } from "./config";
 
 function Signup() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ function Signup() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const res = await fetch("/api/auth/signup", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

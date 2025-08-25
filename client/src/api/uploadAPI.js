@@ -1,7 +1,9 @@
 // client/src/api/uploadAPI.js
 import { getAuthToken } from "./authToken";
 
-const BASE = "/api/subtitles";
+import { API_BASE_URL } from "./config";
+
+const BASE = `${API_BASE_URL}/api/subtitles`;
 
 /**
  * Fetch all recent uploads for the logged-in user

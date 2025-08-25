@@ -7,11 +7,12 @@ import "../styles/Forum.css";
 import DashboardLayout from "../layouts/DashboardLayout";
 import { fetchPosts, createPost, deletePost } from "../api/forumAPI";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "./config";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
-const socket = io("http://localhost:5000");
+const socket = io(`${API_BASE_URL}`);
 
 const Forum = () => {
   const [posts, setPosts] = useState([]);

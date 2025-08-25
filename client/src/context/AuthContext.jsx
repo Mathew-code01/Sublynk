@@ -7,9 +7,12 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
+import { API_BASE_URL } from "./config";
 
 const STORAGE_KEY = "sublynk_auth";
 const AuthContext = createContext(null);
+
+
 
 export function AuthProvider({ children }) {
   // Rehydrate from localStorage immediately (no render flash)
@@ -78,7 +81,7 @@ export function AuthProvider({ children }) {
         return;
       }
       try {
-        const res = await fetch("/api/auth/me", {
+        const res = await fetch(`${API_BASE_URL}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) {
