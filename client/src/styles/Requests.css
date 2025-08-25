@@ -1,0 +1,173 @@
+/* client/src/styles/Requests.css */
+
+/* --------------------------------------------------------------
+   REQUESTS PAGE  (client/src/styles/Requests.css)
+   -------------------------------------------------------------- */
+@import "./variables.css";
+
+/* ==============================================================
+   Requests Page Styles
+   ============================================================== */
+.requests-page {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: var(--spacing-lg);
+  background: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family);
+  color: var(--color-base);
+  transition: background-color var(--transition-speed);
+}
+
+/* --------------------------------------------------------------
+   Title
+-------------------------------------------------------------- */
+.requests-title {
+  font-size: var(--font-size-lg);
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* --------------------------------------------------------------
+   Input & Button
+-------------------------------------------------------------- */
+.requests-input {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  align-items: center;
+}
+
+.requests-input input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius);
+  border: var(--border-light);
+  font-size: 1rem;
+  color: var(--color-base);
+  background: var(--color-off-white);
+  transition: border-color var(--transition-speed);
+}
+
+.requests-input input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 2px rgba(255, 76, 139, 0.2);
+}
+
+.request-btn {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  padding: 0.55rem 1.2rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.request-btn:disabled {
+  background-color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+.request-btn:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------
+   Requests List
+-------------------------------------------------------------- */
+.requests-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.request-item {
+  background: var(--color-off-white);
+  padding: 0.75rem 1rem;
+  border-radius: var(--border-radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--color-base);
+  font-size: 1rem;
+  border: var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+/* --------------------------------------------------------------
+   Status Tags
+-------------------------------------------------------------- */
+.status {
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--border-radius);
+  font-size: 0.85rem;
+  line-height: 1.2;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  color: var(--color-indigo);
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.status.completed {
+  color: var(--color-success);
+  background: rgba(34, 197, 94, 0.2);
+}
+
+.status.failed {
+  color: var(--color-danger);
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* --------------------------------------------------------------
+   Empty State
+-------------------------------------------------------------- */
+.no-requests {
+  text-align: center;
+  color: var(--color-muted);
+  margin-top: var(--spacing-md);
+  font-size: 0.95rem;
+}
+
+/* --------------------------------------------------------------
+   Responsive
+-------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .requests-page {
+    padding: var(--spacing-md);
+    margin: 1rem;
+  }
+  .requests-input {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  .request-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .requests-title {
+    font-size: 1.25rem;
+  }
+  .request-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .status {
+    align-self: flex-end;
+  }
+}

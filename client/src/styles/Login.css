@@ -1,0 +1,125 @@
+/* client/src/styles/Login.css */
+
+/* client/src/styles/Login.css */
+@import './variables.css';
+
+/* Full page background */
+.login-page {
+  position: relative;
+  min-height: 100vh;
+  background: url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1650&q=80') no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family);
+  overflow: hidden;
+}
+
+
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(15,23,42,0.9), rgba(0,0,0,0.6));
+  z-index: 1;
+}
+
+.login-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  max-width: 1000px;
+  width: 100%;
+  padding: var(--spacing-lg);
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Left Section */
+.login-left {
+  flex: 1;
+  color: var(--color-white);
+  text-align: left;
+  padding: var(--spacing-md);
+}
+
+.login-left h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+}
+
+.login-left p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+/* Right (Form) Section */
+.login-form-box {
+  flex: 1;
+  max-width: 400px;
+  background: var(--color-white);
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+}
+
+.login-form-box h2 {
+  text-align: center;
+  color: var(--color-base);
+  margin-bottom: var(--spacing-md);
+}
+
+.login-form-box input {
+  width: 100%;
+  margin-bottom: var(--spacing-sm);
+  padding: 0.75rem;
+  border: 1px solid var(--color-light-gray);
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.login-form-box button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background var(--transition-speed);
+  margin-top: var(--spacing-sm);
+}
+
+.login-form-box button:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: var(--spacing-sm);
+  font-size: 0.9rem;
+}
+
+.form-footer a {
+  color: var(--color-indigo);
+  text-decoration: none;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .login-content {
+    flex-direction: column;
+    padding: var(--spacing-md);
+  }
+
+  .login-left {
+    text-align: center;
+  }
+}

@@ -1,0 +1,312 @@
+/* client/src/styles/Upload.css */
+/* client/src/styles/Upload.css */
+/* ==============================================================
+   Upload Page Styles  (client/src/styles/Upload.css)
+   Light-card design to match Dashboard.css
+   ============================================================== */
+
+@import "./variables.css";
+
+/* Page container */
+.upload-page {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: var(--spacing-lg);
+  background: var(--color-white);
+  color: var(--color-base);
+  font-family: var(--font-family);
+  border: var(--border-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+}
+
+/* Title */
+.upload-title {
+  font-size: var(--font-size-lg);
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.2;
+}
+
+/* Layout wrapper for controls */
+.upload-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+
+/* --------------------------------------------------------------
+   Drag & Drop Zone
+-------------------------------------------------------------- */
+.upload-dropzone {
+  width: 100%;
+  padding: 2rem 1.5rem;
+  border: 2px dashed var(--color-accent);
+  border-radius: var(--border-radius);
+  background-color: rgba(255, 76, 139, 0.04);
+  cursor: pointer;
+  transition: border-color var(--transition-speed), background var(--transition-speed), transform var(--transition-speed);
+}
+
+.upload-dropzone:hover {
+  background-color: rgba(255, 76, 139, 0.08);
+  transform: translateY(-1px);
+}
+
+.upload-dropzone.drag-over {
+  background-color: rgba(255, 76, 139, 0.12);
+  border-color: var(--color-accent-hover);
+  transform: scale(1.01);
+}
+
+.upload-dropzone p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-base);
+  margin: 0;
+}
+
+.upload-dropzone span {
+  display: block;
+  margin: 0.5rem 0;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+/* Native file input (kept visible but compact).
+   If you want to fully hide it and trigger via JS, set display:none. */
+.upload-dropzone input[type="file"] {
+  margin-top: 0.75rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--color-base);
+}
+
+
+/* --------------------------------------------------------------
+   Fallback file input (when used outside dropzone)
+-------------------------------------------------------------- */
+.upload-input {
+  padding: 0.6rem;
+  border: var(--border-light);
+  border-radius: var(--border-radius);
+  background-color: var(--color-off-white);
+  color: var(--color-base);
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+  text-align: left;
+}
+
+
+/* --------------------------------------------------------------
+   File meta + error
+-------------------------------------------------------------- */
+.file-info {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  word-break: break-all;
+}
+
+.upload-error {
+  color: var(--color-danger);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-sm);
+  text-align: left;
+}
+
+
+/* --------------------------------------------------------------
+   Upload button
+-------------------------------------------------------------- */
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.upload-btn:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-2px);
+}
+
+.upload-btn:active:not(:disabled) {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.upload-btn:disabled {
+  background-color: var(--color-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+/* --------------------------------------------------------------
+   Progress Bar
+-------------------------------------------------------------- */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-light-gray);
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background-color: var(--color-accent);
+  transition: width 0.3s ease;
+}
+
+
+/* --------------------------------------------------------------
+   Spinner (inline loader inside button)
+-------------------------------------------------------------- */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid var(--color-light-gray);
+  border-top: 3px solid var(--color-white);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* --------------------------------------------------------------
+   Recent Uploads
+-------------------------------------------------------------- */
+.recent-uploads {
+  margin-top: 2rem;
+  text-align: left;
+  width: 100%;
+}
+
+.recent-uploads h3 {
+  color: var(--color-accent);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.recent-uploads ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.upload-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  justify-content: space-between;
+  padding: 0.5rem 0.8rem;
+  background: var(--color-off-white);
+  border: var(--border-light);
+  border-radius: var(--border-radius);
+  margin-bottom: 0.5rem;
+}
+
+.upload-name {
+  font-weight: 500;
+  color: var(--color-base);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.upload-size {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-right: var(--spacing-sm);
+}
+
+.upload-status {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.upload-status.success { color: var(--color-success); }
+.upload-status.error   { color: var(--color-danger); }
+
+
+/* --------------------------------------------------------------
+   Responsive
+-------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .upload-page {
+    padding: var(--spacing-md);
+    margin: 1rem;
+  }
+  .upload-dropzone {
+    padding: 1.5rem 1rem;
+  }
+  .upload-btn {
+    width: 100%;
+  }
+  .upload-item {
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-title {
+    font-size: 1.25rem;
+  }
+  .upload-dropzone p {
+    font-size: 0.95rem;
+  }
+  .upload-dropzone span {
+    font-size: 0.85rem;
+  }
+  .upload-name {
+    max-width: 140px;
+  }
+}
+
+
+/* --------------------------------------------------------------
+   Reduced Motion Support
+-------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .upload-dropzone,
+  .upload-btn,
+  .progress-fill {
+    transition: none;
+  }
+  .spinner {
+    animation: none;
+  }
+}
+
+
+/* --------------------------------------------------------------
+   Focus Accessibility
+-------------------------------------------------------------- */
+.upload-dropzone:focus-visible,
+.upload-btn:focus-visible,
+.upload-input:focus-visible,
+.upload-dropzone input[type='file']:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent), 0 0 0 4px rgba(255, 76, 139, 0.35);
+}

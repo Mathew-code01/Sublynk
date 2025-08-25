@@ -1,0 +1,235 @@
+/* client/src/styles/DashHeader.css */
+
+/* client/src/styles/DashHeader.css */
+/* client/src/styles/DashHeader.css */
+
+/* General Header Styling */
+/* ============================================================
+   Dashboard Header Styles
+   ============================================================ */
+
+/* General Header Styling */
+.dash-header {
+  background-color: var(--color-base-light);
+  color: var(--color-off-white);
+  padding: var(--spacing-md) var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+  font-family: var(--font-family);
+  transition: background-color var(--transition-speed);
+}
+
+.dash-header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.dash-title {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  color: var(--color-accent);
+  margin: 0;
+}
+
+.dash-greeting {
+  font-size: 1rem;
+  color: var(--color-muted);
+  margin-left: auto;
+  margin-right: var(--spacing-md);
+  white-space: nowrap;
+}
+
+/* Navigation */
+/* Navigation - Default visible for larger screens */
+.dash-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+/* Mobile dropdown animation (only under 768px) */
+@media (max-width: 768px) {
+  .dash-nav {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+  }
+
+  .dash-nav.open {
+    display: flex;
+    max-height: 300px;
+    opacity: 1;
+  }
+}
+
+
+.dash-nav a {
+  color: var(--color-off-white);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.dash-nav a:hover {
+  color: var(--color-white);
+  background-color: var(--color-accent-hover);
+}
+
+/* Logout button */
+.logout-btn {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.logout-btn:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}
+
+/* Hamburger button */
+.dash-menu-toggle {
+  display: none;
+  background: none;
+  font-size: 1.8rem;
+  border: none;
+  color: var(--color-off-white);
+  cursor: pointer;
+  transition: color var(--transition-speed);
+}
+
+.dash-menu-toggle:hover {
+  color: var(--color-accent);
+}
+
+/* Responsive Navigation */
+@media (max-width: 768px) {
+  .dash-menu-toggle {
+    display: block;
+  }
+
+  .dash-greeting {
+    display: none;
+  }
+
+  .dash-nav {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--color-base-light);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
+    width: 100%;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    box-shadow: var(--shadow-md);
+    z-index: 999;
+  }
+
+  .dash-nav a,
+  .logout-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    text-align: left;
+  }
+}
+
+/* Optional Modal Styles for Future Custom Logout Confirm */
+.logout-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.logout-modal {
+  background: var(--color-base-light);
+  color: var(--color-off-white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+.logout-modal h3 {
+  margin-bottom: 1rem;
+  color: var(--color-accent);
+}
+
+.logout-modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.logout-modal-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.logout-modal-buttons .confirm {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+.logout-modal-buttons .confirm:hover {
+  background: var(--color-accent-hover);
+}
+
+.logout-modal-buttons .cancel {
+  background: var(--color-muted);
+  color: var(--color-white);
+}
+
+.logout-modal-buttons .cancel:hover {
+  background: var(--color-muted-hover);
+}
+
+/* Stack buttons on very small screens */
+@media (max-width: 400px) {
+  .logout-modal-buttons {
+    flex-direction: column;
+  }
+  .logout-modal-buttons button {
+    width: 100%;
+  }
+}

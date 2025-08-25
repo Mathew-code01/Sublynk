@@ -1,0 +1,114 @@
+/* client/src/styles/variables.css */
+
+/* --------------------------------------------------------------
+   Global Variables (client/src/styles/variables.css)
+   Updated to emphasize Sublynk brand accent + accessible states
+   -------------------------------------------------------------- */
+:root {
+  /* Brand Colors */
+  --color-accent: #FF4C8B;
+  --color-accent-hover: #e0437a;
+  --color-accent-active: #c83768; /* slightly deeper for pressed states */
+  --color-base: #0F172A;          /* app background (very dark slate) */
+  --color-base-light: #1E293B;    /* card / header background */
+  --color-indigo: #6366F1;
+  --color-indigo-hover: #4F46E5;
+  --color-off-white: #F9FAFB;     /* primary light text */
+  --color-white: #ffffff;         /* surfaces / inputs */
+  --color-black: #000000;
+  --color-muted-hover: #7c8ba1;
+
+
+  /* Extended Semantic Colors */
+  --color-success: #22c55e;       /* green-500 */
+  --color-success-bg: #DCFCE7;    /* light green bg */
+  --color-warning: #FBBF24;       /* amber-400 */
+  --color-warning-bg: #FEF3C7;
+  --color-danger: #EF4444;        /* red-500 */
+  --color-danger-bg: #FEE2E2;
+
+  /* Neutral & Muted */
+  --color-light-gray: #E5E7EB;
+  --color-muted: #94A3B8;
+  --color-bg-alt: #F3F4F6;
+
+  /* Font & Typography */
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
+  --font-size-lg: 24px;
+  --font-size-xl: 36px;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  /* Border & Shadow */
+  --border-radius: 8px;
+  --border-radius-sm: 4px;
+  --border-radius-lg: 16px;
+  --border-light: 1px solid var(--color-light-gray);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.08);
+
+  /* Animation */
+  --transition-speed: 0.3s;
+  --transition-fast: 0.15s;
+
+  /* Focus Ring */
+  --focus-ring: 0 0 0 2px var(--color-accent), 0 0 0 4px rgba(255, 76, 139, 0.35);
+}
+
+/* System Dark Preference helper (optional) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-alt: #0F172A;
+    --color-light-gray: #334155;
+  }
+}
+
+/* --------------------------------------------------------------
+   Shared Page Card Base (optional helper class you can reuse)
+   -------------------------------------------------------------- */
+.page-card {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: var(--spacing-lg);
+  background: var(--color-base-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family);
+  color: var(--color-off-white);
+  transition: background-color var(--transition-speed) ease;
+}
+
+@media (max-width: 768px) {
+  .page-card {
+    padding: var(--spacing-md);
+    margin: 1rem;
+  }
+}
+
+/* --------------------------------------------------------------
+   ACCESSIBILITY UTILITIES
+   -------------------------------------------------------------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+.focus-visible:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

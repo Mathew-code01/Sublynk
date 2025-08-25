@@ -1,0 +1,58 @@
+/* client/src/styles/DashFooter.css */
+/* client/src/styles/DashFooter.css */
+.dash-footer {
+  background-color: var(--color-bg-alt);
+  color: var(--color-base);
+  padding: var(--spacing-md) var(--spacing-lg);
+  text-align: center;
+  border-top: var(--border-light);
+  margin-top: var(--spacing-lg);
+  font-size: var(--font-size-base);
+}
+
+.footer-links {
+  margin-top: var(--spacing-sm);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.footer-links a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--transition-speed);
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  color: var(--color-accent-hover);
+}
+
+.footer-scroll-top {
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 500;
+  transition: color var(--transition-speed);
+}
+
+.footer-scroll-top:hover {
+  color: var(--color-accent-hover);
+}
+
+.footer-credit {
+  margin-top: var(--spacing-sm);
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.footer-credit .heart {
+  color: var(--color-accent);
+}

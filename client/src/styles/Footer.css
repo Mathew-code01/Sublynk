@@ -1,0 +1,11 @@
+/* client/src/styles/Footer.css */
+
+.footer {
+    background-color: var(--color-base);
+    color: var(--color-off-white);
+    text-align: center;
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    font-size: 14px;
+  }
+  

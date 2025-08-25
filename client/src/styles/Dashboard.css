@@ -1,0 +1,541 @@
+/* client/src/styles/Dashboard.css */
+/* client/src/styles/Dashboard.css */
+/* client/src/styles/Dashboard.css */
+@import './variables.css';
+
+/* =======================
+   Base Layout
+========================== */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-off-white);
+  color: var(--color-base);
+  font-family: var(--font-family);
+}
+
+/* =======================
+   Header
+========================== */
+.dashboard-header {
+  padding: 2rem 1rem;
+  text-align: center;
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-md);
+  border-bottom: var(--border-light);
+}
+
+.dashboard-header h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =======================
+   Search Bar
+========================== */
+.search-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.search-bar input {
+  /* flex: 1 1 300px; */
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: var(--border-light);
+  border-radius: var(--border-radius);
+}
+
+.search-bar button {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-bar button:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.search-bar button:disabled {
+  background-color: var(--color-muted);
+  cursor: not-allowed;
+}
+
+/* =======================
+   Main Content
+========================== */
+.dashboard-content {
+  flex: 1;
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* =======================
+   Subtitle Section
+========================== */
+.subtitle-section {
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--border-radius);
+  margin-top: 2rem;
+  overflow: hidden;
+}
+
+.subtitle-section h2 {
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 1.25rem;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border-radius: 6px 6px 0 0;
+}
+
+/* =======================
+   Table View
+========================== */
+.table-wrapper {
+  overflow-x: auto;
+  background-color: var(--color-white);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+
+.subtitles-table {
+  width: 100%;
+  min-width: 800px;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.subtitles-table thead {
+  background: linear-gradient(
+    to right,
+    var(--color-accent),
+    var(--color-accent-hover)
+  );
+  color: var(--color-white);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+
+.subtitles-table th,
+.subtitles-table td {
+  padding: 16px;
+  font-size: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-light-gray);
+  white-space: nowrap;
+}
+
+.subtitles-table th {
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.subtitles-table td a {
+  font-weight: 500;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.subtitles-table td em {
+  font-style: italic;
+  color: var(--color-muted);
+}
+
+.subtitles-table tr:hover {
+  background-color: rgba(108, 211, 255, 0.08);
+  transition: background 0.2s ease-in-out;
+}
+
+.subtitles-table td,
+.subtitles-table th {
+  padding: 16px;
+  font-size: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--color-light-gray);
+  white-space: nowrap;
+  overflow: hidden;
+  /* text-overflow: ellipsis; */
+}
+
+.subtitles-table td:nth-child(3) a {
+  display: inline-block;
+  max-width: 400px; /* Prevents overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* =======================
+   Buttons
+========================== */
+.download-btn,
+.download-zip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--color-accent);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.download-btn:hover,
+.download-zip-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+.download-zip-wrapper {
+  margin-top: 1.5rem;
+  text-align: right;
+}
+
+.download-zip-btn {
+  background-color: var(--color-accent);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+}
+
+.download-zip-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+
+/* =======================
+   Subtitle Cards (Mobile)
+========================== */
+.subtitles-card-list {
+  display: none;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.subtitle-card-mobile {
+  flex: 1 1 300px;
+  padding: 1rem;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+}
+
+.subtitle-card-mobile .subtitle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle-card-mobile .subtitle-lang {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border-radius: 4px;
+}
+
+.subtitle-card-mobile p {
+  margin: 0.25rem 0;
+}
+
+/* =======================
+   Feedback Messages
+========================== */
+.loading,
+.error-message,
+.no-results {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  color: var(--color-base-light);
+}
+
+/* =======================
+   Drag and Drop Info
+========================== */
+.drag-info {
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+  color: var(--color-muted);
+}
+
+.season-tag {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--color-indigo);
+  border-radius: 4px;
+}
+
+
+/* =======================
+   Responsive Styles
+========================== */
+@media (max-width: 1200px) {
+  .table-wrapper,
+  .subtitles-table {
+    display: none !important;
+  }
+
+  .subtitles-card-list {
+    display: flex !important;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 100%;
+  }
+
+  .search-bar button {
+    width: 100%;
+  }
+
+  .dashboard-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .download-btn {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+}
+
+@media (min-width: 1201px) {
+  .dashboard-header h1 {
+    font-size: 2.4rem;
+  }
+
+  .search-bar {
+    flex-direction: row;
+    max-width: 800px;
+  }
+
+  .search-bar input,
+  .search-bar button {
+    font-size: 1.05rem;
+  }
+
+  .subtitles-card-list {
+    display: none !important;
+  }
+}
+
+/* in Dashboard.css */
+.selected-row {
+  background-color: rgba(108, 211, 255, 0.15);
+}
+
+.subtitle-card-mobile.selected {
+  border: 2px solid #6cd3ff;
+  background-color: #f0fbff;
+}
+
+
+/* ================
+   Download ZIP & Buttons Wrapper
+================ */
+.download-zip-wrapper {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background-color: var(--color-white);
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  align-items: center;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* ================
+   ZIP Download Button
+================ */
+.download-zip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+  box-shadow: var(--shadow-md);
+}
+
+.download-zip-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* ================
+   Download All Button (Individual Files)
+================ */
+.download-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: #10b981;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color var(--transition-speed) ease;
+  box-shadow: var(--shadow-md);
+}
+
+.download-all-btn:hover {
+  background-color: #059669;
+}
+
+/* ================
+   Clear Selection Button
+================ */
+.clear-selection-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.2;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: #ef4444;
+  color: var(--color-white);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--transition-speed) ease;
+  box-shadow: var(--shadow-md);
+}
+
+.clear-selection-btn:hover {
+  background-color: #dc2626;
+}
+
+/* ================
+   Responsive Adjustments
+================ */
+@media (max-width: 768px) {
+  .download-zip-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .download-zip-btn,
+  .download-all-btn,
+  .clear-selection-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* -------------------------------
+   Subtitle Removed Badge
+-------------------------------- */
+.removed-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background-color: #e63946; /* red tone */
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  cursor: default;
+}
+
+.spinner {
+  padding: 10px;
+  color: #5cc4ff;
+  font-weight: bold;
+  animation: pulse 1s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+
+.download-btn.retry {
+  background-color: #f44336;
+  color: white;
+}
+
+.spinner-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #3498db;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.spinner {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
