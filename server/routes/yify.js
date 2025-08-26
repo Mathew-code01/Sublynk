@@ -10,16 +10,22 @@ const fetch = require("node-fetch");
 const cheerio = require("cheerio");
 const { pipeline } = require("stream");
 const { promisify } = require("util");
-const puppeteer = require("puppeteer-extra");
+const puppeteer = require("puppeteer-core");
+const puppeteerExtra = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const path = require("path");
 const fs = require("fs");
 
-puppeteer.use(StealthPlugin());
+puppeteerExtra.use(StealthPlugin());
 
 const streamPipeline = promisify(pipeline);
 
-const CHROME_PATH = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+const CHROME_PATH =
+  process.env.CHROME_PATH || // use env variable if defined
+  (process.platform === "win32"
+    ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+    : "/usr/bin/google-chrome"); // Render / Linux
+
 const BASE_URL = "https://yifysubtitles.ch";
 
 
@@ -61,8 +67,8 @@ router.get("/search", async (req, res) => {
   let browser;
   try {
     console.log("[YIFY] Launching browser...");
-    browser = await puppeteer.launch({
-      headless: "new",
+    browser = await puppeteerExtra.launch({
+      headless: true,
       executablePath: CHROME_PATH,
       args: [
         "--no-sandbox",
@@ -73,6 +79,7 @@ router.get("/search", async (req, res) => {
       ],
       protocolTimeout: 120000,
     });
+
 
     const page = await browser.newPage();
 

@@ -17,7 +17,7 @@ const dayjs = require("dayjs");
 const pLimit = require("p-limit");
 const fs = require("fs");
 const path = require("path");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 const chromeLauncher = require("chrome-launcher");
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -217,9 +217,11 @@ router.get("/download", async (req, res) => {
   let downloadPath;
   try {
     browser = await puppeteerExtra.launch({
-      headless: "new", // change to true in prod
+      headless: true,
+      executablePath: process.env.CHROME_PATH || "/usr/bin/google-chrome",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
+
 
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
