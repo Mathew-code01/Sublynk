@@ -33,6 +33,7 @@ import DashHeader from "../components/DashHeader";
 import DashFooter from "../components/DashFooter";
 import useMediaQuery from "../hooks/useMediaQuery";
 import "../styles/Dashboard.css";
+import { API_BASE_URL } from "../api/config";
 
 
 import {
@@ -151,6 +152,7 @@ const Dashboard = () => {
   const fileInputRef = useRef(null);
   const isMobile = useMediaQuery("(max-width: 1200px)");
 
+  
   /* ------------------------------------------------------------
    * Handle View
    * ------------------------------------------------------------ */
@@ -305,7 +307,7 @@ const Dashboard = () => {
           console.log("Podnapisi download_url:", sub.download_url);
           if (!pageUrl) throw new Error("Podnapisi: missing page URL");
           if (!pageUrl) throw new Error("Podnapisi: missing page URL");
-          downloadUrl = `/api/podnapisi/download?url=${encodeURIComponent(
+          downloadUrl = `${API_BASE_URL}/api/podnapisi/download?url=${encodeURIComponent(
             pageUrl
           )}&filename=${encodeURIComponent(fallbackFileName)}`;
           STEP("5a", "Prepared backend download URL", downloadUrl);
@@ -314,7 +316,7 @@ const Dashboard = () => {
           STEP(5, "Branch: Addic7ed");
           const pageUrl = cand.downloadUrl || cand.externalUrl;
           if (!pageUrl) throw new Error("Addic7ed: missing page URL");
-          downloadUrl = `/api/addic7ed/download?url=${encodeURIComponent(
+          downloadUrl = `${API_BASE_URL}/api/addic7ed/download?url=${encodeURIComponent(
             pageUrl
           )}&filename=${encodeURIComponent(fallbackFileName)}&debug=1`;
           STEP("5a", "Prepared backend download URL", downloadUrl);
@@ -333,7 +335,7 @@ const Dashboard = () => {
           // If no downloadUrl but fileId is actually an /api/tvsubtitles/resolve?url=...
           if (
             !candidate &&
-            cand.fileId?.startsWith("/api/tvsubtitles/resolve?")
+            cand.fileId?.startsWith(`${API_BASE_URL}/api/tvsubtitles/resolve?`)
           ) {
             try {
               const u = new URL(cand.fileId, window.location.origin);
@@ -365,7 +367,7 @@ const Dashboard = () => {
             const pageUrl = candidate;
             if (!pageUrl)
               throw new Error("TVSubtitles: missing page URL to resolve");
-            const resolveUrl = `/api/tvsubtitles/resolve?url=${encodeURIComponent(
+            const resolveUrl = `${API_BASE_URL}/api/tvsubtitles/resolve?url=${encodeURIComponent(
               pageUrl
             )}&debug=1`;
             STEP(
@@ -399,7 +401,7 @@ const Dashboard = () => {
           }
 
           // Now hit backend /download which will extract the ZIP and stream it
-          downloadUrl = `/api/tvsubtitles/download?url=${encodeURIComponent(
+          downloadUrl = `${API_BASE_URL}/api/tvsubtitles/download?url=${encodeURIComponent(
             resolvedUrl
           )}&filename=${encodeURIComponent(fallbackFileName)}&debug=1`;
           STEP("5h", "Prepared backend download URL", downloadUrl);
