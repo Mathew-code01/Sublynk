@@ -478,26 +478,30 @@ router.get("/download", async (req, res) => {
       const client = await page.target().createCDPSession();
       const downloadPath = path.join(__dirname, "../tmp_downloads");
       ensureDirExists(downloadPath);
+
       await client.send("Page.setDownloadBehavior", {
         behavior: "allow",
         downloadPath,
       });
 
-      // Trigger the download
+      // Trigger the download (no waitForEvent here!)
       console.log("[YIFY] Clicking download button...");
-      const [download] = await Promise.all([
-        page.waitForEvent("download"),
-        page.click("a.btn-icon.download-subtitle"),
-      ]);
+      await page.click("a.btn-icon.download-subtitle");
 
-      // Save the file
-      const zipPath = path.join(downloadPath, "subtitle.zip");
-      await download.saveAs(zipPath);
+      // Wait a bit for Chromium to drop the file
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      // Find the downloaded zip file
+      const files = fs.readdirSync(downloadPath);
+      const zipFile = files.find((f) => f.endsWith(".zip"));
+      if (!zipFile) throw new Error("No ZIP file found after download");
+
+      const zipPath = path.join(downloadPath, zipFile);
 
       // Stream back to client
       res.setHeader(
         "Content-Disposition",
-        'attachment; filename="subtitle.zip"'
+        `attachment; filename="${zipFile}"`
       );
       res.setHeader("Content-Type", "application/zip");
 
@@ -526,6 +530,7 @@ router.get("/download", async (req, res) => {
     }
   }
 });
+
 
 
 
