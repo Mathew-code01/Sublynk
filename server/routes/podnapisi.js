@@ -503,7 +503,9 @@ router.get("/download", async (req, res) => {
       const resolved = await resolveForumToSubtitle(pageUrl, debug);
       if (!resolved) {
         res.setHeader("X-Subtitle-Status", "missing");
-        return res.status(404).json({ error: "Forum thread has no subtitle link", hops });
+        return res
+          .status(404)
+          .json({ error: "Forum thread has no subtitle link", hops });
       }
       workingUrl = resolved.url;
       hops.push(resolved);
@@ -511,7 +513,9 @@ router.get("/download", async (req, res) => {
       const resolved = await resolveSearchToSubtitle(pageUrl, debug);
       if (!resolved) {
         res.setHeader("X-Subtitle-Status", "missing");
-        return res.status(404).json({ error: "Search page returned no subtitle results", hops });
+        return res
+          .status(404)
+          .json({ error: "Search page returned no subtitle results", hops });
       }
       workingUrl = resolved.url;
       hops.push(resolved);
@@ -521,9 +525,15 @@ router.get("/download", async (req, res) => {
 
     // 1) If not direct /download, scrape subtitle detail page
     if (!/\/download\/?$/.test(workingUrl)) {
-      console.log(`[POD ${reqId}] 🔎 Scraping subtitle detail page: ${workingUrl}`);
+      console.log(
+        `[POD ${reqId}] 🔎 Scraping subtitle detail page: ${workingUrl}`
+      );
       const pageResponse = await axios.get(workingUrl, {
-        headers: { "User-Agent": UA, "Accept-Language": "en-US,en;q=0.9", Referer: workingUrl },
+        headers: {
+          "User-Agent": UA,
+          "Accept-Language": "en-US,en;q=0.9",
+          Referer: workingUrl,
+        },
       });
 
       const $ = cheerio.load(pageResponse.data);
@@ -533,7 +543,9 @@ router.get("/download", async (req, res) => {
         const downloadPath = downloadForm.attr("action");
         finalUrl = new URL(downloadPath, workingUrl).href;
         formDownload = true;
-        console.log(`[POD ${reqId}] ✅ Found form-based download URL: ${finalUrl}`);
+        console.log(
+          `[POD ${reqId}] ✅ Found form-based download URL: ${finalUrl}`
+        );
       } else {
         const downloadPath = $('a[href*="/download"]').attr("href");
         if (!downloadPath) {
@@ -541,7 +553,9 @@ router.get("/download", async (req, res) => {
           return res.status(404).json({
             error: "Could not find download link on subtitle page",
             hops,
-            candidates: $("a").map((i, el) => $(el).attr("href")).get(),
+            candidates: $("a")
+              .map((i, el) => $(el).attr("href"))
+              .get(),
           });
         }
         finalUrl = new URL(downloadPath, workingUrl).href;
@@ -553,7 +567,12 @@ router.get("/download", async (req, res) => {
 
     // Debug mode → just return info, don’t stream
     if (debug) {
-      return res.json({ ok: true, resolvedZipUrl: finalUrl, hops, formDownload });
+      return res.json({
+        ok: true,
+        resolvedZipUrl: finalUrl,
+        hops,
+        formDownload,
+      });
     }
 
     // 2) Fetch the actual ZIP
@@ -570,8 +589,8 @@ router.get("/download", async (req, res) => {
         responseType: "stream",
         headers: {
           "User-Agent": UA,
-          "Referer": workingUrl,
-          "Accept": "*/*",
+          Referer: workingUrl,
+          Accept: "*/*",
           "Content-Type": "application/x-www-form-urlencoded",
         },
         maxRedirects: 5,
@@ -598,13 +617,24 @@ router.get("/download", async (req, res) => {
 
     fileResponse.data.pipe(res);
     fileResponse.data.on("end", () => {
-      console.log(`[POD ${reqId}] ✅ Streamed ${filename} in ${Date.now() - t0}ms`);
+      console.log(
+        `[POD ${reqId}] ✅ Streamed ${filename} in ${Date.now() - t0}ms`
+      );
     });
   } catch (err) {
     console.error(`[POD ${reqId}] ❌ Error: ${err.message}`);
-    res.setHeader("X-Subtitle-Status", "failed");
-    res.status(500).json({ error: "Download failed", message: err.message });
+
+    const statusCode = err.response?.status || 500;
+    const status = statusCode >= 500 ? "failed-server" : "failed";
+
+    res.setHeader("X-Subtitle-Status", status);
+    res.status(statusCode).json({
+      error: "Download failed",
+      message: err.message,
+      status,
+    });
   }
+
 });
 
 

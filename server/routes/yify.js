@@ -400,17 +400,18 @@ router.get("/final-download", async (req, res) => {
 // ------------------------------------------------------------
 // GET /api/yify/download?url=<zip-file-url>
 // ------------------------------------------------------------
-// ------------------------------------------------------------
-// GET /api/yify/download?url=<zip-or-subtitle-url>
-// ------------------------------------------------------------
+
 router.get("/download", async (req, res) => {
+  const reqId = `YIFY-${Date.now().toString(36)}`;
   let fileUrl = req.query.url;
   if (!fileUrl) {
-    console.log("[YIFY] Missing file URL in /download");
-    return res.status(400).json({ error: "Missing file URL" });
+    console.log(`[${reqId}] ❌ Missing file URL in /download`);
+    return res
+      .status(400)
+      .json({ error: "Missing file URL", step: "validate", reqId });
   }
 
-  console.log("[YIFY] Downloading ZIP file from:", fileUrl);
+  console.log(`[${reqId}] ⏬ Downloading ZIP file from:`, fileUrl);
 
   try {
     // --- First try direct fetch ---
@@ -430,25 +431,21 @@ router.get("/download", async (req, res) => {
       const filename =
         disposition?.match(/filename="?(.+)"?/)?.[1] || "subtitle.zip";
 
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${filename}"`
-      );
+      res.setHeader("X-Debug-Request-Id", reqId);
+      res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
       res.setHeader(
         "Content-Type",
         fileRes.headers.get("content-type") || "application/zip"
       );
 
-      console.log("[YIFY] Streaming ZIP file via fetch...");
+      console.log(`[${reqId}] ✅ Streaming ZIP file via fetch...`);
       await streamPipeline(fileRes.body, res);
-      console.log("[YIFY] File streamed successfully (fetch).");
+      console.log(`[${reqId}] ✅ File streamed successfully (fetch).`);
       return;
     }
 
     console.warn(
-      "[YIFY] Fetch failed with status",
-      fileRes.status,
-      "→ retrying with Puppeteer"
+      `[${reqId}] ⚠️ Fetch failed with status ${fileRes.status}, retrying with Puppeteer`
     );
 
     // --- Puppeteer fallback ---
@@ -465,10 +462,10 @@ router.get("/download", async (req, res) => {
       if (fileUrl.includes("/subtitle/") && fileUrl.endsWith(".zip")) {
         fileUrl = fileUrl
           .replace("/subtitle/", "/subtitles/")
-          .replace(/-english.*\.zip$/, ""); // strip zip suffix
+          .replace(/-english.*\.zip$/, "");
       }
 
-      console.log("[YIFY] Navigating to detail page:", fileUrl);
+      console.log(`[${reqId}] 🌐 Navigating to detail page:`, fileUrl);
       await page.goto(fileUrl, {
         waitUntil: "domcontentloaded",
         timeout: 60000,
@@ -484,8 +481,7 @@ router.get("/download", async (req, res) => {
         downloadPath,
       });
 
-      // Trigger the download (no waitForEvent here!)
-      console.log("[YIFY] Clicking download button...");
+      console.log(`[${reqId}] ⏯ Clicking download button...`);
       await page.click("a.btn-icon.download-subtitle");
 
       // Wait a bit for Chromium to drop the file
@@ -494,15 +490,16 @@ router.get("/download", async (req, res) => {
       // Find the downloaded zip file
       const files = fs.readdirSync(downloadPath);
       const zipFile = files.find((f) => f.endsWith(".zip"));
-      if (!zipFile) throw new Error("No ZIP file found after download");
+      if (!zipFile) {
+        throw new Error("No ZIP file found after Puppeteer download");
+      }
 
       const zipPath = path.join(downloadPath, zipFile);
 
       // Stream back to client
-      res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${zipFile}"`
-      );
+      res.setHeader("X-Debug-Request-Id", reqId);
+      res.setHeader("X-Resolved-Zip-Url", fileUrl);
+      res.setHeader("Content-Disposition", `attachment; filename="${zipFile}"`);
       res.setHeader("Content-Type", "application/zip");
 
       const stream = fs.createReadStream(zipPath);
@@ -511,25 +508,28 @@ router.get("/download", async (req, res) => {
       // cleanup after streaming finishes
       const cleanup = () => {
         fs.unlink(zipPath, (err) => {
-          if (err) console.warn("[YIFY] Temp cleanup failed:", err.message);
-          else console.log("[YIFY] Temp file deleted:", zipPath);
+          if (err) console.warn(`[${reqId}] ⚠️ Temp cleanup failed:`, err.message);
+          else console.log(`[${reqId}] 🗑 Temp file deleted:`, zipPath);
         });
       };
 
       res.on("finish", cleanup);
       res.on("close", cleanup);
 
-      console.log("[YIFY] File streamed successfully (Puppeteer).");
+      console.log(`[${reqId}] ✅ File streamed successfully (Puppeteer).`);
     } finally {
       await browser.close();
     }
   } catch (err) {
-    console.error("[YIFY] Download error:", err);
+    console.error(`[${reqId}] ❌ Download error:`, err);
     if (!res.headersSent) {
-      res.status(500).json({ error: "Failed to download subtitle file" });
+      res
+        .status(500)
+        .json({ error: err.message, step: "catch", reqId, stack: err.stack });
     }
   }
 });
+
 
 
 
