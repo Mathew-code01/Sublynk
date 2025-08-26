@@ -57,7 +57,9 @@ const DashHeader = () => {
         <div className="dash-header-container">
           <h1 className="dash-title">Sublynk</h1>
 
-          <span className="dash-greeting">Hi {user?.name || user?.email}!</span>
+          <span className="dash-greeting">
+            Hi {user?.username || user?.email}!
+          </span>
 
           <button
             ref={toggleBtnRef}
