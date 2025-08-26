@@ -18,6 +18,7 @@ const pLimit = require("p-limit");
 const fs = require("fs");
 const path = require("path");
 const puppeteer = require("puppeteer-core");
+const chromium = require("chromium");
 const chromeLauncher = require("chrome-launcher");
 const relativeTime = require("dayjs/plugin/relativeTime");
 dayjs.extend(relativeTime);
@@ -216,11 +217,11 @@ router.get("/download", async (req, res) => {
   let browser;
   let downloadPath;
   try {
-    browser = await puppeteerExtra.launch({
-      headless: true,
-      executablePath: process.env.CHROME_PATH || "/usr/bin/google-chrome",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
+   const browser = await puppeteer.launch({
+     headless: true,
+     executablePath: chromium.path, // 👈 use chromium npm path
+     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+   });
 
 
     const page = await browser.newPage();

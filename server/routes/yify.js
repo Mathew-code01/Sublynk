@@ -11,6 +11,7 @@ const cheerio = require("cheerio");
 const { pipeline } = require("stream");
 const { promisify } = require("util");
 const puppeteer = require("puppeteer-core");
+const chromium = require("chromium");
 const puppeteerExtra = require("puppeteer-extra");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const path = require("path");
@@ -69,7 +70,7 @@ router.get("/search", async (req, res) => {
     console.log("[YIFY] Launching browser...");
     browser = await puppeteerExtra.launch({
       headless: true,
-      executablePath: CHROME_PATH,
+      executablePath: chromium.path, // ✅ use chromium from node_modules
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -79,6 +80,7 @@ router.get("/search", async (req, res) => {
       ],
       protocolTimeout: 120000,
     });
+
 
 
     const page = await browser.newPage();
