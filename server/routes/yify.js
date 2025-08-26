@@ -400,8 +400,11 @@ router.get("/final-download", async (req, res) => {
 // ------------------------------------------------------------
 // GET /api/yify/download?url=<zip-file-url>
 // ------------------------------------------------------------
+// ------------------------------------------------------------
+// GET /api/yify/download?url=<zip-or-subtitle-url>
+// ------------------------------------------------------------
 router.get("/download", async (req, res) => {
-  const fileUrl = req.query.url;
+  let fileUrl = req.query.url;
   if (!fileUrl) {
     console.log("[YIFY] Missing file URL in /download");
     return res.status(400).json({ error: "Missing file URL" });
@@ -410,6 +413,7 @@ router.get("/download", async (req, res) => {
   console.log("[YIFY] Downloading ZIP file from:", fileUrl);
 
   try {
+    // --- First try direct fetch ---
     const fileRes = await fetch(fileUrl, {
       headers: {
         "User-Agent":
@@ -453,38 +457,68 @@ router.get("/download", async (req, res) => {
       executablePath: chromium.path,
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
-    const page = await browser.newPage();
 
-    await page.setRequestInterception(true);
-    page.on("request", (req) => {
-      if (["image", "stylesheet", "font"].includes(req.resourceType())) {
-        req.abort();
-      } else {
-        req.continue();
+    try {
+      const page = await browser.newPage();
+
+      // If they passed a `.zip` link, convert it to its detail page
+      if (fileUrl.includes("/subtitle/") && fileUrl.endsWith(".zip")) {
+        fileUrl = fileUrl
+          .replace("/subtitle/", "/subtitles/")
+          .replace(/-english.*\.zip$/, ""); // strip zip suffix
       }
-    });
 
-    const response = await page.goto(fileUrl, {
-      waitUntil: "networkidle2",
-      timeout: 60000,
-    });
+      console.log("[YIFY] Navigating to detail page:", fileUrl);
+      await page.goto(fileUrl, {
+        waitUntil: "domcontentloaded",
+        timeout: 60000,
+      });
 
-    if (!response || !response.ok()) {
-      await browser.close();
-      throw new Error(
-        `Puppeteer download failed: ${
-          response ? response.status() : "no response"
-        }`
+      // Setup download behavior
+      const client = await page.target().createCDPSession();
+      const downloadPath = path.join(__dirname, "../tmp_downloads");
+      ensureDirExists(downloadPath);
+      await client.send("Page.setDownloadBehavior", {
+        behavior: "allow",
+        downloadPath,
+      });
+
+      // Trigger the download
+      console.log("[YIFY] Clicking download button...");
+      const [download] = await Promise.all([
+        page.waitForEvent("download"),
+        page.click("a.btn-icon.download-subtitle"),
+      ]);
+
+      // Save the file
+      const zipPath = path.join(downloadPath, "subtitle.zip");
+      await download.saveAs(zipPath);
+
+      // Stream back to client
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="subtitle.zip"'
       );
+      res.setHeader("Content-Type", "application/zip");
+
+      const stream = fs.createReadStream(zipPath);
+      stream.pipe(res);
+
+      // cleanup after streaming finishes
+      const cleanup = () => {
+        fs.unlink(zipPath, (err) => {
+          if (err) console.warn("[YIFY] Temp cleanup failed:", err.message);
+          else console.log("[YIFY] Temp file deleted:", zipPath);
+        });
+      };
+
+      res.on("finish", cleanup);
+      res.on("close", cleanup);
+
+      console.log("[YIFY] File streamed successfully (Puppeteer).");
+    } finally {
+      await browser.close();
     }
-
-    const buffer = await response.buffer();
-    await browser.close();
-
-    res.setHeader("Content-Disposition", 'attachment; filename="subtitle.zip"');
-    res.setHeader("Content-Type", "application/zip");
-    res.end(buffer);
-    console.log("[YIFY] File streamed successfully (Puppeteer).");
   } catch (err) {
     console.error("[YIFY] Download error:", err);
     if (!res.headersSent) {
@@ -492,6 +526,8 @@ router.get("/download", async (req, res) => {
     }
   }
 });
+
+
 
 
 
