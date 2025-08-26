@@ -397,6 +397,9 @@ router.get("/final-download", async (req, res) => {
 // ------------------------------------------------------------
 // GET /api/yify/download?url=<zip-file-url>
 // ------------------------------------------------------------
+// ------------------------------------------------------------
+// GET /api/yify/download?url=<zip-file-url>
+// ------------------------------------------------------------
 router.get("/download", async (req, res) => {
   const fileUrl = req.query.url;
   if (!fileUrl) {
@@ -405,25 +408,91 @@ router.get("/download", async (req, res) => {
   }
 
   console.log("[YIFY] Downloading ZIP file from:", fileUrl);
+
   try {
     const fileRes = await fetch(fileUrl, {
-      headers: { "User-Agent": "Mozilla/5.0" },
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115 Safari/537.36",
+        Accept: "application/zip,application/octet-stream;q=0.9,*/*;q=0.8",
+        Referer: BASE_URL,
+        "Accept-Language": "en-US,en;q=0.9",
+        Connection: "keep-alive",
+      },
     });
 
-    if (!fileRes.ok) {
-      console.error("[YIFY] Failed to fetch ZIP file. Status:", fileRes.status);
-      return res.status(502).json({ error: "Failed to fetch ZIP file" });
+    if (fileRes.ok) {
+      const disposition = fileRes.headers.get("content-disposition");
+      const filename =
+        disposition?.match(/filename="?(.+)"?/)?.[1] || "subtitle.zip";
+
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="${filename}"`
+      );
+      res.setHeader(
+        "Content-Type",
+        fileRes.headers.get("content-type") || "application/zip"
+      );
+
+      console.log("[YIFY] Streaming ZIP file via fetch...");
+      await streamPipeline(fileRes.body, res);
+      console.log("[YIFY] File streamed successfully (fetch).");
+      return;
     }
 
+    console.warn(
+      "[YIFY] Fetch failed with status",
+      fileRes.status,
+      "→ retrying with Puppeteer"
+    );
+
+    // --- Puppeteer fallback ---
+    const browser = await puppeteerExtra.launch({
+      headless: true,
+      executablePath: chromium.path,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+    const page = await browser.newPage();
+
+    await page.setRequestInterception(true);
+    page.on("request", (req) => {
+      if (["image", "stylesheet", "font"].includes(req.resourceType())) {
+        req.abort();
+      } else {
+        req.continue();
+      }
+    });
+
+    const response = await page.goto(fileUrl, {
+      waitUntil: "networkidle2",
+      timeout: 60000,
+    });
+
+    if (!response || !response.ok()) {
+      await browser.close();
+      throw new Error(
+        `Puppeteer download failed: ${
+          response ? response.status() : "no response"
+        }`
+      );
+    }
+
+    const buffer = await response.buffer();
+    await browser.close();
+
     res.setHeader("Content-Disposition", 'attachment; filename="subtitle.zip"');
-    console.log("[YIFY] Streaming ZIP file to client...");
-    await streamPipeline(fileRes.body, res);
-    console.log("[YIFY] File streamed successfully.");
+    res.setHeader("Content-Type", "application/zip");
+    res.end(buffer);
+    console.log("[YIFY] File streamed successfully (Puppeteer).");
   } catch (err) {
     console.error("[YIFY] Download error:", err);
-    res.status(500).json({ error: "Failed to download subtitle file" });
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Failed to download subtitle file" });
+    }
   }
 });
+
 
 
 module.exports = router;
