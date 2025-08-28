@@ -61,6 +61,30 @@ function levenshtein(a, b) {
   return matrix[a.length][b.length];
 }
 
+function mapError(err) {
+  if (!err) return "Unknown error";
+
+  if (
+    err.code === "ENOTFOUND" ||
+    err.code === "ECONNREFUSED" ||
+    err.code === "ECONNRESET" ||
+    err.code === "ETIMEDOUT"
+  ) {
+    return "Network unavailable. Please check your internet connection.";
+  }
+
+  // Puppeteer network-level errors
+  if (
+    err.message &&
+    /net::(ERR_|CONNECTION|TIMED_OUT|INTERNET_DISCONNECTED)/i.test(err.message)
+  ) {
+    return "Network unavailable. Please check your internet connection.";
+  }
+
+  return err.message || "Unexpected server error";
+}
+
+
 router.get("/search", async (req, res) => {
   const query = req.query.query;
   if (!query) return res.status(400).json({ error: "Missing query" });
@@ -80,8 +104,6 @@ router.get("/search", async (req, res) => {
       ],
       protocolTimeout: 120000,
     });
-
-
 
     const page = await browser.newPage();
 
@@ -272,14 +294,17 @@ router.get("/search", async (req, res) => {
       matchedTitle: chosen.title,
       subtitles: finalResults,
     });
-
   } catch (err) {
     if (browser) await browser.close();
     console.error("[YIFY] Puppeteer search error:", err);
+
     if (!res.headersSent) {
-      return res.status(500).json({ error: "Failed to fetch YIFY subtitles" });
+      return res.status(500).json({
+        error: mapError(err),
+      });
     }
   }
+
 });
 
 

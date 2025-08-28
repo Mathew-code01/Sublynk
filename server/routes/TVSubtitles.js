@@ -730,6 +730,30 @@ function safeGetUrlFromMatch(match) {
   );
 }
 
+function mapError(err) {
+  if (!err) return "Unknown error";
+
+  if (
+    err.code === "ENOTFOUND" ||
+    err.code === "ECONNREFUSED" ||
+    err.code === "ECONNRESET" ||
+    err.code === "ETIMEDOUT"
+  ) {
+    return "Network unavailable. Please check your internet connection.";
+  }
+
+  // Puppeteer network-level errors
+  if (
+    err.message &&
+    /net::(ERR_|CONNECTION|TIMED_OUT|INTERNET_DISCONNECTED)/i.test(err.message)
+  ) {
+    return "Network unavailable. Please check your internet connection.";
+  }
+
+  return err.message || "Unexpected server error";
+}
+
+
 router.get("/search", async (req, res) => {
   const query = (req.query.query || "").trim();
   const reqId =
@@ -881,8 +905,12 @@ router.get("/search", async (req, res) => {
     });
   } catch (err) {
     console.error(`[${reqId}] 💥 Search error:`, err);
-    return res.status(500).json({ message: err.message });
+
+    return res.status(500).json({
+      error: mapError(err),
+    });
   }
+
 });
 
 

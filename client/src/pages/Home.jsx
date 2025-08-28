@@ -56,7 +56,7 @@ function Home() {
             {/* Optional small greeting when logged in */}
             {isAuthed && (
               <p className="home__greeting">
-                Hi {user?.name || user?.email}! Ready to find subtitles?
+                Hi {user?.username || user?.email}! Ready to find subtitles?
               </p>
             )}
 

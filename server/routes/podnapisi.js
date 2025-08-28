@@ -469,9 +469,15 @@ router.get("/search", async (req, res) => {
     setCache(cacheKey, subtitles);
     res.json({ subtitles, cached: false, took_ms: Date.now() - res.startTime });
   } catch (err) {
+    if (err.code === "ENOTFOUND" || err.code === "ECONNREFUSED") {
+      return res
+        .status(503)
+        .json({ error: "Network unavailable. Please check your connection." });
+    }
     console.error("Podnapisi search error:", err.message);
     res.status(500).json({ error: "Failed to fetch Podnapisi subtitles" });
   }
+
 });
 
 

@@ -151,8 +151,26 @@ const Dashboard = () => {
 
   const fileInputRef = useRef(null);
   const isMobile = useMediaQuery("(max-width: 1200px)");
+  const [rotatingSource, setRotatingSource] = useState("");
 
-  
+  // 🔹 Rotate through sources while loading
+  useEffect(() => {
+    if (loading && loadingSources.size > 0) {
+      const sources = Array.from(loadingSources);
+      let index = 0;
+      setRotatingSource(sources[index]);
+
+      const interval = setInterval(() => {
+        index = (index + 1) % sources.length;
+        setRotatingSource(sources[index]);
+      }, 2000);
+
+      return () => clearInterval(interval);
+    } else {
+      setRotatingSource("");
+    }
+  }, [loading, loadingSources]);
+
   /* ------------------------------------------------------------
    * Handle View
    * ------------------------------------------------------------ */
@@ -460,7 +478,6 @@ const Dashboard = () => {
           );
         }
 
-
         // ──────────────────────────────────────────────────────────
         // 07. Trigger browser download
         // ──────────────────────────────────────────────────────────
@@ -500,63 +517,95 @@ const Dashboard = () => {
     [downloadStatus]
   );
 
-
   /* ------------------------------------------------------------
    * Search (multi API)
    * ------------------------------------------------------------ */
   /* ------------------------------------------------------------
    * Search (multi API)
    * ------------------------------------------------------------ */
-  const handleSearch = useCallback(async () => {
-    const term = query.trim();
-    if (!term) {
-      toast.error("Enter a movie or show title.");
-      return;
-    }
+  /* ------------------------------------------------------------
+   * Search (multi API)
+   * ------------------------------------------------------------ */
+  /* ------------------------------------------------------------
+   * Search (multi API)
+   * ------------------------------------------------------------ */
+  /* ------------------------------------------------------------
+   * Search (multi API)
+   * ------------------------------------------------------------ */
+const handleSearch = useCallback(async () => {
+  const term = query.trim();
+  if (!term) {
+    toast.error("Enter a movie or show title.");
+    return;
+  }
 
-    const providers = [
-      { name: "TVSubtitles", fetchFn: fetchTVSubtitles },
-      { name: "Podnapisi", fetchFn: fetchPodnapisiSubtitles },
-      { name: "YIFY", fetchFn: fetchYifySubtitles },
-      { name: "Addic7ed", fetchFn: fetchAddic7ed },
-    ];
+  const providers = [
+    { name: "TVSubtitles", fetchFn: fetchTVSubtitles },
+    { name: "Podnapisi", fetchFn: fetchPodnapisiSubtitles },
+    { name: "YIFY", fetchFn: fetchYifySubtitles },
+    { name: "Addic7ed", fetchFn: fetchAddic7ed },
+  ];
 
-    const activeSources = new Set(providers.map((p) => p.name));
-    setSubtitles([]);
-    setLoadingSources(new Set(activeSources));
-    setLoading(true);
-    setError("");
-    setHasSearched(true);
+  const activeSources = new Set(providers.map((p) => p.name));
+  setSubtitles([]);
+  setLoadingSources(new Set(activeSources));
+  setLoading(true);
+  setError("");
+  setHasSearched(true);
 
-    const runProvider = async ({ name, fetchFn }) => {
-      try {
-        const raw = await fetchFn(term);
-        console.log("TVSubtitles raw:", raw);
-        const normalized = normalizeSubtitleList(raw);
-        console.log("After normalize:", normalized);
-        const filtered = filterRenderable(normalized);
-        console.log("TVSubtitles filteredraw:", raw);
-        const sorted = prioritizeSeasonPacks(filtered);
-        console.log("After normalize:", filtered);
+  const runProvider = async ({ name, fetchFn }) => {
+    try {
+      const raw = await fetchFn(term);
+      const normalized = normalizeSubtitleList(raw);
+      const filtered = filterRenderable(normalized);
+      const sorted = prioritizeSeasonPacks(filtered);
 
-        if (sorted.length) {
-          setSubtitles((prev) => [...prev, ...sorted]);
-        }
-      } catch (err) {
-        console.warn(`${name} fetch failed:`, err);
-      } finally {
-        activeSources.delete(name);
-        setLoadingSources(new Set(activeSources));
-        if (activeSources.size === 0) setLoading(false);
+      if (sorted.length) {
+        setSubtitles((prev) => [...prev, ...sorted]);
       }
-    };
+    } catch (err) {
+      console.warn(`${name} fetch failed:`, err);
 
-    // 1️⃣ Start TVSubtitles first and wait for it to finish updating UI
-    await runProvider(providers[0]);
+      // ✅ Bubble up backend errors / detect offline
+      if (!navigator.onLine) {
+        setError(
+          "You appear to be offline. Please check your internet connection."
+        );
+      } else if (err?.message) {
+        setError(err.message); // backend-provided error
+      } else {
+        setError(
+          `Failed to fetch subtitles from ${name}. Please try again later.`
+        );
+      }
+    } finally {
+      activeSources.delete(name);
+      setLoadingSources(new Set(activeSources));
 
-    // 2️⃣ Start the rest in parallel, each updates as it finishes
-    providers.slice(1).forEach((provider) => runProvider(provider));
-  }, [query]);
+      if (activeSources.size === 0) {
+        setLoading(false);
+
+        // ✅ only set fallback if *no results* and *still no error*
+        setSubtitles((prev) => {
+          if (prev.length === 0) {
+            setError(
+              (curr) =>
+                curr || "No subtitles could be fetched from any provider."
+            );
+          }
+          return prev;
+        });
+      }
+    }
+  };
+
+  // Run TVSubtitles first
+  await runProvider(providers[0]);
+
+  // Run the others in parallel
+  providers.slice(1).forEach((provider) => runProvider(provider));
+}, [query]);
+
 
   const [fallbackList, setFallbackList] = useState([]);
 
@@ -962,7 +1011,6 @@ const Dashboard = () => {
       onDragOver={(e) => e.preventDefault()}
     >
       <DashHeader />
-
       <header className="dashboard-header">
         <h1>
           <FiVideo style={{ marginRight: "6px" }} /> Subtitle Finder
@@ -1003,22 +1051,47 @@ const Dashboard = () => {
           <FiUploadCloud /> Drag and drop a video file to detect subtitles
         </p>
       </header>
-
       <main className="dashboard-content">
-        {Array.from(loadingSources).map((source) => (
-          <div key={source} className="spinner">
-            <span className="loader"></span>
-            Loading from {source}...
+        {/* 🔹 Show single rotating source message */}
+        {loading && rotatingSource && (
+          <div className="loading-sources">
+            <div className="spinner">
+              <svg className="loader-rotate" viewBox="0 0 50 50">
+                <circle
+                  className="loader-track"
+                  cx="25"
+                  cy="25"
+                  r="20"
+                  strokeWidth="5"
+                  fill="none"
+                />
+                <circle
+                  className="loader-head"
+                  cx="25"
+                  cy="25"
+                  r="20"
+                  strokeWidth="5"
+                  fill="none"
+                />
+              </svg>
+            </div>
+            <div className="loader-caption">
+              Loading from {rotatingSource}...
+            </div>
           </div>
-        ))}
+        )}
 
+        {/* 🔹 Show global loading status */}
         {loading ? (
           <div className="loading">
             <FiClock /> Fetching subtitles...
           </div>
         ) : error ? (
           <div className="error-message">
-            <FiAlertCircle /> {error}
+            <FiAlertCircle />{" "}
+            {error.includes("timeout")
+              ? "The request took too long. Please try again."
+              : error}
           </div>
         ) : subtitles.length > 0 ? (
           isMobile ? (

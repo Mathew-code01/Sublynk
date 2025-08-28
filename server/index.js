@@ -20,7 +20,7 @@ const subtitleRoutes = require("./routes/subtitleRoutes");
 const authRoutes = require("./routes/authRoutes");
 const forumRoutes = require("./routes/forumRoutes");
 const podnapisiRoutes = require("./routes/podnapisi");
-const addic7edRoutes = require("./routes/addic7ed");
+// const addic7edRoutes = require("./routes/addic7ed");
 const subdbRoutes = require("./routes/subdb");
 const bsplayerRoutes = require("./routes/bsplayer");
 const tvSubtitlesRoutes = require("./routes/TVSubtitles");
@@ -62,7 +62,7 @@ async function start() {
   app.use("/api/subtitles", subtitleRoutes);
   app.use("/api/forum", forumRoutes);
   app.use("/api/podnapisi", podnapisiRoutes);
-  app.use("/api/addic7ed", addic7edRoutes);
+  // app.use("/api/addic7ed", addic7edRoutes);
   app.use("/api/subdb", subdbRoutes);
   app.use("/api/bsplayer", bsplayerRoutes);
   app.use("/api/yify", require("./routes/yify"));

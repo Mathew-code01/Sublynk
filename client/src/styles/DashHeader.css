@@ -5,7 +5,7 @@
 
 /* General Header Styling */
 /* ============================================================
-   Dashboard Header Styles
+   Dashboard Header Styles9+
    ============================================================ */
 
 /* General Header Styling */
@@ -40,7 +40,7 @@
 .dash-greeting {
   font-size: 1rem;
   color: var(--color-muted);
-  margin-left: auto;
+  margin-left: var(--spacing-md);
   margin-right: var(--spacing-md);
   white-space: nowrap;
 }

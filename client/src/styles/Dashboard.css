@@ -490,12 +490,6 @@
   cursor: default;
 }
 
-.spinner {
-  padding: 10px;
-  color: #5cc4ff;
-  font-weight: bold;
-  animation: pulse 1s infinite ease-in-out;
-}
 
 @keyframes pulse {
   0% { opacity: 0.4; }
@@ -534,8 +528,93 @@
   100% { transform: rotate(360deg); }
 }
 
+
+
+/* =======================
+   Dashboard Content Area
+========================== */
+.dashboard-content {
+  flex: 1;
+  padding: 2rem 1rem;
+  width: 100%;
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* =======================
+   Loading Sources
+========================== */
+.loading-sources {
+  display: flex;
+  flex-direction: column; /* stack children vertically */
+  justify-content: center;
+  align-items: center;
+  margin: 2rem auto;
+  padding: 1.25rem 1.5rem;
+  background: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-base);
+  min-width: 260px;
+  max-width: 400px;
+  text-align: center;
+  gap: 0.75rem; /* optional: adds space between spinner & text */
+}
+
+
+/* =======================
+   Spinner Wrapper
+========================== */
+/* Spinner wrapper (stacked vertically) */
 .spinner {
   display: flex;
+  flex-direction: column;  /* spinner on top, text below */
   align-items: center;
-  font-size: 14px;
+  justify-content: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+/* Make only the circle spin */
+.loader-rotate {
+  width: 50px;
+  height: 50px;
+  animation: spin 1.2s linear infinite;
+  transform-origin: center;
+}
+
+/* Spinner background track */
+.loader-track {
+  stroke: currentColor;
+  opacity: 0.15;
+}
+
+/* Spinner foreground arc */
+.loader-head {
+  stroke: var(--color-accent);
+  stroke-linecap: round;
+}
+
+/* Spinner rotation */
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* Arc “breathing” effect */
+@keyframes dash {
+  0%   { stroke-dashoffset: 125; }
+  50%  { stroke-dashoffset: 40; }
+  100% { stroke-dashoffset: 125; }
+}
+
+/* Text stays still */
+.loader-caption {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-base);
 }
