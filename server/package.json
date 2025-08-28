@@ -33,6 +33,7 @@
     "multer": "^2.0.2",
     "node-cache": "^5.1.2",
     "node-fetch": "^2.7.0",
+    "nodemailer": "^7.0.5",
     "os": "^0.1.2",
     "p-limit": "^6.2.0",
     "puppeteer": "^24.16.0",

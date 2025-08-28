@@ -82,7 +82,7 @@ function Login() {
             </button>
           </form>
           <p className="form-footer">
-            <a href="/forgot-password">Forgot password?</a> |{" "}
+            <Link to="/forgot-password">Forgot password?</Link> |{" "}
             <Link to="/signup">Sign Up</Link>
           </p>
         </div>
