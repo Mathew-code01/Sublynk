@@ -112,3 +112,23 @@ a:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
 }
+
+html {
+  color-scheme: only light;
+}
+
+/* --------------------------------------------------------------
+   Mobile Brightness & Accent Adjustments
+   -------------------------------------------------------------- */
+@media (max-width: 768px) {
+  :root {
+    /* Backgrounds: brighten for small screens */
+    --color-off-white: #FFFFFF;   /* cleaner white */
+    --color-bg-alt: #FAFAFA;      /* lighter neutral alt */
+
+    /* Accent: slightly more vivid for OLED / phone screens */
+    --color-accent: #FF3C82;        /* bump saturation + brightness */
+    --color-accent-hover: #e03572;  /* matching vivid hover */
+    --color-accent-active: #c42c62; /* deeper pressed state */
+  }
+}
