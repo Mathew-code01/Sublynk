@@ -4,26 +4,30 @@
    Global Variables (client/src/styles/variables.css)
    Updated to emphasize Sublynk brand accent + accessible states
    -------------------------------------------------------------- */
+/* --------------------------------------------------------------
+   Global Variables (client/src/styles/variables.css)
+   Sublynk brand colors with lighter accent pinks
+   -------------------------------------------------------------- */
 :root {
   /* Brand Colors */
-  --color-accent: #FF5CA2;          /* brighter pink */
-  --color-accent-hover: #ff408f;    /* lighter hover */
-  --color-accent-active: #e7337c;   /* bold pressed */
+  --color-accent: #FF7ABF;          /* lighter pink accent */
+  --color-accent-hover: #ff5fae;    /* softer hover */
+  --color-accent-active: #e94b95;   /* slightly bolder pressed */
   --color-base: #17223a;            /* dark but less heavy */
   --color-base-light: #25314f;      /* lighter card background */
   --color-indigo: #7c83ff;          /* brighter indigo */
   --color-indigo-hover: #5a63f7;
-  --color-off-white: #FFFFFF;       /* brighter base text */
+  --color-off-white: #FFFFFF;       /* bright text */
   --color-white: #ffffff;           /* pure white surfaces */
   --color-black: #000000;
   --color-muted-hover: #96a3bb;
 
   /* Extended Semantic Colors */
-  --color-success: #31d46a;         /* brighter green */
+  --color-success: #31d46a;         
   --color-success-bg: #e9fce9;
-  --color-warning: #ffc94d;         /* brighter amber */
+  --color-warning: #ffc94d;         
   --color-warning-bg: #fff7e0;
-  --color-danger: #ff5252;          /* more vibrant red */
+  --color-danger: #ff5252;          
   --color-danger-bg: #ffe4e4;
 
   /* Neutral & Muted */
@@ -50,26 +54,26 @@
   --border-radius-sm: 4px;
   --border-radius-lg: 16px;
   --border-light: 1px solid var(--color-light-gray);
-  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.08);
 
   /* Animation */
   --transition-speed: 0.3s;
   --transition-fast: 0.15s;
 
-   /* Focus Ring */
+  /* Focus Ring */
   --focus-ring: 0 0 0 2px var(--color-accent), 
-                0 0 0 4px rgba(255, 92, 162, 0.4);
+                0 0 0 4px rgba(255, 122, 191, 0.35);
 }
 
-
-/* Light mode / small screens */
-@media (max-width: 768px) {
+/* Dark mode helper */
+@media (prefers-color-scheme: dark) {
   :root {
-    --color-off-white: #FFFFFF;
-    --color-bg-alt: #FAFAFA;
+    --color-bg-alt: #0F172A;
+    --color-light-gray: #334155;
   }
 }
+
 
 /* --------------------------------------------------------------
    Shared Page Card Base (optional helper class you can reuse)
@@ -133,4 +137,53 @@ html {
   :root {
     --color-accent: color(display-p3 1 0.3 0.6);
   }
+}
+
+/* --------------------------------------------------------------
+   Accent Button Styles (Sublynk)
+   -------------------------------------------------------------- */
+.btn-accent {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  font-family: var(--font-family);
+  color: var(--color-white);
+  background: linear-gradient(
+    135deg,
+    var(--color-accent) 0%,
+    #ff8ec9 100%
+  );
+  border: none;
+  cursor: pointer;
+  transition: transform var(--transition-fast) ease,
+              box-shadow var(--transition-speed) ease,
+              background var(--transition-speed) ease;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-accent:hover {
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-hover) 0%,
+    #ff74bc 100%
+  );
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-accent:active {
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-active) 0%,
+    #e23387 100%
+  );
+  transform: translateY(0);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-accent:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
