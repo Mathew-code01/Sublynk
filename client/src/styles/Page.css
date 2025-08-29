@@ -1,0 +1,159 @@
+/* client/src/styles/Page.css */
+@import "./variables.css";
+/* --------------------------------------------------------------
+   Shared Page Layout Styling
+   -------------------------------------------------------------- */
+.page {
+  max-width: 850px;
+  margin: var(--spacing-xl) auto;
+  padding: var(--spacing-lg);
+  background: var(--color-base-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-md);
+  font-family: var(--font-family);
+  color: var(--color-off-white);
+  line-height: 1.6;
+  transition: background-color var(--transition-speed) ease;
+}
+
+/* Typography hierarchy */
+.page-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  color: var(--color-accent);
+  letter-spacing: -0.5px;
+}
+
+.page-subtitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: var(--spacing-lg) 0 var(--spacing-sm);
+  color: var(--color-muted);
+}
+
+.page-text {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-off-white);
+}
+
+/* Contact info blocks */
+.contact-info p {
+  margin: var(--spacing-xs) 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-muted);
+}
+
+/* Contact form */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.contact-form input,
+.contact-form textarea {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  border: var(--border-light);
+  background: var(--color-white);
+  font-size: 1rem;
+  font-family: var(--font-family);
+  color: var(--color-base);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: var(--focus-ring);
+}
+
+/* Button styling */
+.contact-form button {
+  align-self: flex-start;
+  background: var(--color-accent);
+  color: var(--color-white);
+  font-weight: 600;
+  border: none;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  box-shadow: var(--shadow-md);
+}
+
+.contact-form button:hover {
+  background: var(--color-accent-hover);
+  transform: translateY(-2px);
+}
+
+.contact-form button:active {
+  background: var(--color-accent-active);
+  transform: translateY(0);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page {
+    margin: var(--spacing-lg);
+    padding: var(--spacing-md);
+  }
+
+  .page-title {
+    font-size: 1.8rem;
+  }
+
+  .page-subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+  background: none;
+  border: none;
+  color: var(--color-accent);
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color var(--transition-speed);
+}
+
+.back-button:hover {
+  color: var(--color-accent-hover);
+}
+
+/* Button disabled/loading state */
+.contact-form button:disabled {
+  background: var(--color-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+/* Spinner */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  margin-left: 8px; /* spacing between text and spinner */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

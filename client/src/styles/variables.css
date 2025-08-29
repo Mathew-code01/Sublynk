@@ -125,10 +125,11 @@ html {
     /* Backgrounds: brighten for small screens */
     --color-off-white: #FFFFFF;   /* cleaner white */
     --color-bg-alt: #FAFAFA;      /* lighter neutral alt */
+  }
+}
 
-    /* Accent: slightly more vivid for OLED / phone screens */
-    --color-accent: #FF3C82;        /* bump saturation + brightness */
-    --color-accent-hover: #e03572;  /* matching vivid hover */
-    --color-accent-active: #c42c62; /* deeper pressed state */
+@supports (color: color(display-p3 1 0.3 0.6)) {
+  :root {
+    --color-accent: color(display-p3 1 0.3 0.6);
   }
 }

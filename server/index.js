@@ -24,6 +24,7 @@ const podnapisiRoutes = require("./routes/podnapisi");
 const subdbRoutes = require("./routes/subdb");
 const bsplayerRoutes = require("./routes/bsplayer");
 const tvSubtitlesRoutes = require("./routes/TVSubtitles");
+const contactRoute = require("./routes/contact");
 
 const PORT = process.env.PORT || 5000;
 
@@ -67,6 +68,7 @@ async function start() {
   app.use("/api/bsplayer", bsplayerRoutes);
   app.use("/api/yify", require("./routes/yify"));
   app.use("/api/tvsubtitles", tvSubtitlesRoutes);
+  app.use("/api/contact", contactRoute);
 
   // Health check
   app.get("/health", (req, res) =>

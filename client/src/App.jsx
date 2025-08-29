@@ -2,6 +2,7 @@
 // client/src/App.jsx
 // client/src/App.jsx
 // client/src/App.jsx
+// client/src/App.jsx
 import React, { Suspense, lazy } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -20,6 +21,11 @@ const Upload = lazy(() => import("./pages/Upload"));
 const Requests = lazy(() => import("./pages/Requests"));
 const Forum = lazy(() => import("./pages/Forum"));
 
+// Newly added pages
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Contact = lazy(() => import("./pages/Contact"));
+
 function App() {
   return (
     <AuthProvider>
@@ -33,6 +39,11 @@ function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
 
+            {/* Static pages from footer */}
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/contact" element={<Contact />} />
+
             {/* Protected */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
@@ -41,7 +52,7 @@ function App() {
               <Route path="/forum" element={<Forum />} />
             </Route>
 
-            {/* 404 */}
+            {/* 404 fallback */}
             <Route path="*" element={<Home />} />
           </Routes>
         </Suspense>
