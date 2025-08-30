@@ -14,12 +14,13 @@ exports.createPost = async (req, res) => {
   const { content, imageUrl } = req.body;
   const post = await ForumPost.create({
     user: req.user._id,
-    username: req.user.name,
+    username: req.user.username, // ✅ match with comments
     content,
     imageUrl,
   });
   res.status(201).json(post);
 };
+
 
 // DELETE post
 exports.deletePost = async (req, res) => {
@@ -56,11 +57,11 @@ exports.addComment = async (req, res) => {
 
   const comment = {
     user: req.user._id,
-    username: req.user.username,
+    username: req.user.username, // ✅ consistent
     content: req.body.content,
   };
 
-  post.comments.unshift(comment);
+  post.comments.unshift(comment); // latest comment first
   await post.save();
   res.json(post);
 };

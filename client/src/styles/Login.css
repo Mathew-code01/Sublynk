@@ -123,3 +123,43 @@
     text-align: center;
   }
 }
+
+.password-field {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  flex: 1;
+  padding-right: 2.75rem; /* ensures text never collides with icon */
+  box-sizing: border-box;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gray);
+  font-size: 1.25rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  padding: 0; /* ensures button doesn’t expand the field */
+}
+
+.toggle-password:hover {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--color-accent);
+  transform: translateY(-50%) scale(1.15);
+}

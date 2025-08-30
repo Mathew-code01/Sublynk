@@ -10,6 +10,8 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/Login.css";
 import { API_BASE_URL } from "../api/config";
 
+// import icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Login() {
   const navigate = useNavigate();
@@ -18,6 +20,7 @@ function Login() {
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -69,14 +72,26 @@ function Login() {
               onChange={handleChange}
               required
             />
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
+
+            {/* Password Input with Toggle */}
+            <div className="password-field">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <bu
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </bu>
+            </div>
+
             <button type="submit" disabled={submitting}>
               {submitting ? "Logging in..." : "Log In"}
             </button>

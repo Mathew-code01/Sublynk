@@ -4,7 +4,6 @@
 
 // client/src/pages/Signup.jsx
 // client/src/pages/Signup.jsx
-// client/src/pages/Signup.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,12 +11,19 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/Signup.css";
 import { API_BASE_URL } from "../api/config";
 
+// import icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Signup() {
   const navigate = useNavigate();
   const { login } = useAuth(); // auto-login after signup (optional)
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    email: "",
+    username: "",
+    password: "",
+  });
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
@@ -66,13 +72,6 @@ function Signup() {
           <h2>Create Account</h2>
           <form onSubmit={handleSubmit}>
             <input
-              name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-            <input
               name="email"
               type="email"
               placeholder="Email Address"
@@ -81,13 +80,32 @@ function Signup() {
               required
             />
             <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              value={formData.password}
+              name="username"
+              placeholder="Username"
+              value={formData.username}
               onChange={handleChange}
               required
             />
+
+            {/* Password Input with Toggle */}
+            <div className="password-field">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+              <bu
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </bu>
+            </div>
+
             <button type="submit" disabled={submitting}>
               {submitting ? "Signing up..." : "Sign Up"}
             </button>

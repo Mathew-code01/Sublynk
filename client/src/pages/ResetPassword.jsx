@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "../styles/Login.css"; // reuse styles
 import { API_BASE_URL } from "../api/config";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // 👈 import icons
+import "../styles/Login.css"; // reuse styles
 
 function ResetPassword() {
-  const { token } = useParams(); // comes from /reset-password/:token
+  const { token } = useParams();
   const navigate = useNavigate();
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // 👀 toggles
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +41,7 @@ function ResetPassword() {
         toast.error(data.message || "Reset failed.");
       } else {
         toast.success("Password has been reset successfully!");
-        navigate("/login"); // redirect after success
+        navigate("/login");
       }
     } catch (err) {
       console.error(err);
@@ -57,22 +62,44 @@ function ResetPassword() {
         <div className="login-form-box">
           <h2>Reset Password</h2>
           <form onSubmit={handleSubmit}>
-            <input
-              name="password"
-              type="password"
-              placeholder="New Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <input
-              name="confirmPassword"
-              type="password"
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+            {/* New Password */}
+            <div className="password-field">
+              <input
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="New Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword((p) => !p)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="password-field">
+              <input
+                name="confirmPassword"
+                type={showConfirm ? "text" : "password"}
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowConfirm((p) => !p)}
+              >
+                {showConfirm ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
+
             <button type="submit" disabled={submitting}>
               {submitting ? "Resetting..." : "Reset Password"}
             </button>

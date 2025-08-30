@@ -1,7 +1,7 @@
 // client/src/api/forumAPI.js
+// client/src/api/forumAPI.js
 import { getAuthToken } from "./authToken";
 import { API_BASE_URL } from "../api/config";
-
 
 const BASE = `${API_BASE_URL}/api/forum`;
 
@@ -64,10 +64,54 @@ export async function deletePost(id) {
         Authorization: `Bearer ${getAuthToken()}`,
       },
     });
-    const data = await res.json();
-    return data.success;
+    return res.ok; // ✅ simpler check
   } catch (err) {
     console.error("deletePost error:", err);
     return false;
+  }
+}
+
+/**
+ * Toggle like on a post
+ * @param {string} id - Post ID
+ * @returns {Promise<object|null>} - Updated post
+ */
+export async function toggleLike(id) {
+  try {
+    const res = await fetch(`${BASE}/${id}/like`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("toggleLike error:", err);
+    return null;
+  }
+}
+
+/**
+ * Add a comment to a post
+ * @param {string} id - Post ID
+ * @param {string} content - Comment text
+ * @returns {Promise<object|null>} - Updated post
+ */
+export async function addComment(id, content) {
+  if (!content.trim()) return null;
+
+  try {
+    const res = await fetch(`${BASE}/${id}/comment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({ content }),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("addComment error:", err);
+    return null;
   }
 }
