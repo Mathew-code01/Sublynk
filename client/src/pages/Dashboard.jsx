@@ -139,7 +139,7 @@ function convertTVSubtitlesToNormalized(input, group = "tvsub") {
  * Component
  * ============================================================== */
 const Dashboard = () => {
-  const [subtitles, setSubtitles] = useState([]);
+  // const [subtitles, setSubtitles] = useState([]);
   const [latest, setLatest] = useState([]);
   const [topRated, setTopRated] = useState([]);
   const [query, setQuery] = useState("");
@@ -148,6 +148,8 @@ const Dashboard = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [loadingSources, setLoadingSources] = useState(new Set()); // ← Add this
   const [downloadStatus, setDownloadStatus] = useState({});
+  // Group results by provider
+  const [providerResults, setProviderResults] = useState({});
 
   const fileInputRef = useRef(null);
   const isMobile = useMediaQuery("(max-width: 1200px)");
@@ -532,80 +534,84 @@ const Dashboard = () => {
   /* ------------------------------------------------------------
    * Search (multi API)
    * ------------------------------------------------------------ */
-const handleSearch = useCallback(async () => {
-  const term = query.trim();
-  if (!term) {
-    toast.error("Enter a movie or show title.");
-    return;
-  }
-
-  const providers = [
-    { name: "TVSubtitles", fetchFn: fetchTVSubtitles },
-    { name: "Podnapisi", fetchFn: fetchPodnapisiSubtitles },
-    { name: "YIFY", fetchFn: fetchYifySubtitles },
-    { name: "Addic7ed", fetchFn: fetchAddic7ed },
-  ];
-
-  const activeSources = new Set(providers.map((p) => p.name));
-  setSubtitles([]);
-  setLoadingSources(new Set(activeSources));
-  setLoading(true);
-  setError("");
-  setHasSearched(true);
-
-  const runProvider = async ({ name, fetchFn }) => {
-    try {
-      const raw = await fetchFn(term);
-      const normalized = normalizeSubtitleList(raw);
-      const filtered = filterRenderable(normalized);
-      const sorted = prioritizeSeasonPacks(filtered);
-
-      if (sorted.length) {
-        setSubtitles((prev) => [...prev, ...sorted]);
-      }
-    } catch (err) {
-      console.warn(`${name} fetch failed:`, err);
-
-      // ✅ Bubble up backend errors / detect offline
-      if (!navigator.onLine) {
-        setError(
-          "You appear to be offline. Please check your internet connection."
-        );
-      } else if (err?.message) {
-        setError(err.message); // backend-provided error
-      } else {
-        setError(
-          `Failed to fetch subtitles from ${name}. Please try again later.`
-        );
-      }
-    } finally {
-      activeSources.delete(name);
-      setLoadingSources(new Set(activeSources));
-
-      if (activeSources.size === 0) {
-        setLoading(false);
-
-        // ✅ only set fallback if *no results* and *still no error*
-        setSubtitles((prev) => {
-          if (prev.length === 0) {
-            setError(
-              (curr) =>
-                curr || "No subtitles could be fetched from any provider."
-            );
-          }
-          return prev;
-        });
-      }
+  const handleSearch = useCallback(async () => {
+    const term = query.trim();
+    if (!term) {
+      toast.error("Enter a movie or show title.");
+      return;
     }
-  };
 
-  // Run TVSubtitles first
-  await runProvider(providers[0]);
+    const providers = [
+      { name: "TVSubtitles", fetchFn: fetchTVSubtitles },
+      { name: "Podnapisi", fetchFn: fetchPodnapisiSubtitles },
+      { name: "YIFY", fetchFn: fetchYifySubtitles },
+      { name: "Addic7ed", fetchFn: fetchAddic7ed },
+    ];
 
-  // Run the others in parallel
-  providers.slice(1).forEach((provider) => runProvider(provider));
-}, [query]);
+    const activeSources = new Set(providers.map((p) => p.name));
+    setProviderResults({}); // reset grouped results
+    setLoadingSources(new Set(activeSources));
+    setLoading(true);
+    setError("");
+    setHasSearched(true);
 
+    const runProvider = async ({ name, fetchFn }) => {
+      try {
+        const raw = await fetchFn(term);
+        const normalized = normalizeSubtitleList(raw);
+        const filtered = filterRenderable(normalized);
+        const sorted = prioritizeSeasonPacks(filtered);
+
+        if (sorted.length) {
+          setProviderResults((prev) => ({
+            ...prev,
+            [name]: sorted,
+          }));
+        }
+        // ❌ do nothing if empty → avoids empty sections
+      } catch (err) {
+        console.warn(`${name} fetch failed:`, err);
+
+        if (!navigator.onLine) {
+          setError(
+            "You appear to be offline. Please check your internet connection."
+          );
+        } else if (err?.message) {
+          setError(err.message);
+        } else {
+          setError(
+            `Failed to fetch subtitles from ${name}. Please try again later.`
+          );
+        }
+        // ❌ don’t insert empty arrays
+      } finally {
+        activeSources.delete(name);
+        setLoadingSources(new Set(activeSources));
+
+        if (activeSources.size === 0) {
+          setLoading(false);
+
+          // ✅ If all providers failed or gave nothing
+          setProviderResults((prev) => {
+            if (Object.keys(prev).length === 0) {
+              setError(
+                (curr) =>
+                  curr || "No subtitles could be fetched from any provider."
+              );
+            }
+            return prev;
+          });
+        }
+      }
+    };
+
+
+    // Run TVSubtitles first
+    await runProvider(providers[0]);
+
+    // Run others in parallel
+    providers.slice(1).forEach((provider) => runProvider(provider));
+  }, [query]);
 
   const [fallbackList, setFallbackList] = useState([]);
 
@@ -684,7 +690,7 @@ const handleSearch = useCallback(async () => {
 
   const handleClear = useCallback(() => {
     setQuery("");
-    setSubtitles([]);
+    // setSubtitles([]);
     setHasSearched(false);
     loadDefaultFeeds();
   }, [loadDefaultFeeds]);
@@ -734,7 +740,7 @@ const handleSearch = useCallback(async () => {
     if (hasSearched && query.trim() === "") {
       loadDefaultFeeds();
       setHasSearched(false);
-      setSubtitles([]);
+      // setSubtitles([]);
     }
   }, [query, hasSearched, loadDefaultFeeds]);
 
@@ -1052,7 +1058,67 @@ const handleSearch = useCallback(async () => {
         </p>
       </header>
       <main className="dashboard-content">
-        {/* 🔹 Show single rotating source message */}
+        {error && (
+          <div className="error-message">
+            <FiAlertCircle /> {error}
+          </div>
+        )}
+
+        {/* ✅ Results grouped by provider */}
+        {Object.keys(providerResults).length > 0 ? (
+          Object.entries(providerResults).map(([name, results]) =>
+            results.length > 0 ? (
+              <section key={name} className="subtitle-section">
+                <h2>{name} Results</h2>
+                {isMobile ? renderSubtitleCards(results) : renderTable(results)}
+              </section>
+            ) : null
+          )
+        ) : !hasSearched ? (
+          <>
+            <section className="subtitle-section">
+              <h2>
+                <FiTrendingUp /> Most Downloaded Subtitles
+              </h2>
+              {isMobile
+                ? renderSubtitleCards(topRated)
+                : renderTable(topRated, "", {
+                    hideView: true,
+                    hideUploaded: false,
+                  })}
+            </section>
+            <section className="subtitle-section">
+              <h2>
+                <FiClock /> Latest Uploads
+              </h2>
+              {isMobile
+                ? renderSubtitleCards(latest)
+                : renderTable(latest, "no-scroll")}
+            </section>
+          </>
+        ) : (
+          !loading && (
+            <div className="no-results">
+              <FiAlertCircle /> No subtitles found for: <strong>{query}</strong>
+            </div>
+          )
+        )}
+
+        {!loading &&
+          hasSearched &&
+          Object.keys(providerResults).length === 0 &&
+          fallbackList.length > 0 && (
+            <section className="subtitle-section">
+              <h2>
+                <FiAlertTriangle /> Showing fallback results
+              </h2>
+              {isMobile
+                ? renderSubtitleCards(fallbackList)
+                : renderTable(fallbackList)}
+            </section>
+          )}
+
+        {/* Keep spinner visible until all providers complete */}
         {loading && rotatingSource && (
           <div className="loading-sources">
             <div className="spinner">
@@ -1076,65 +1142,10 @@ const handleSearch = useCallback(async () => {
               </svg>
             </div>
             <div className="loader-caption">
-              Loading from {rotatingSource}...
+              {rotatingSource
+                ? `Fetching from ${rotatingSource}...`
+                : "Fetching more subtitles..."}
             </div>
-          </div>
-        )}
-
-        {/* 🔹 Show global loading status */}
-        {loading ? (
-          <div className="loading">
-            <FiClock /> Fetching subtitles...
-          </div>
-        ) : error ? (
-          <div className="error-message">
-            <FiAlertCircle />{" "}
-            {error.includes("timeout")
-              ? "The request took too long. Please try again."
-              : error}
-          </div>
-        ) : subtitles.length > 0 ? (
-          isMobile ? (
-            renderSubtitleCards(subtitles)
-          ) : (
-            renderTable(subtitles)
-          )
-        ) : !hasSearched ? (
-          fallbackList.length > 0 ? (
-            <section className="subtitle-section">
-              <h2>
-                <FiTrendingUp /> Popular & Recent Subtitles
-              </h2>
-              {isMobile
-                ? renderSubtitleCards(fallbackList)
-                : renderTable(fallbackList)}
-            </section>
-          ) : (
-            <>
-              <section className="subtitle-section">
-                <h2>
-                  <FiTrendingUp /> Most Downloaded Subtitles
-                </h2>
-                {isMobile
-                  ? renderSubtitleCards(topRated)
-                  : renderTable(topRated, "", {
-                      hideView: true,
-                      hideUploaded: false,
-                    })}
-              </section>
-              <section className="subtitle-section">
-                <h2>
-                  <FiClock /> Latest Uploads
-                </h2>
-                {isMobile
-                  ? renderSubtitleCards(latest)
-                  : renderTable(latest, "no-scroll")}
-              </section>
-            </>
-          )
-        ) : (
-          <div className="no-results">
-            <FiAlertCircle /> No subtitles found for: <strong>{query}</strong>
           </div>
         )}
       </main>
